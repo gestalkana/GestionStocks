@@ -8,11 +8,22 @@
     <!-- Paramètre -->
     <a href="#" class="text-white text-decoration-none"><i class="bi bi-gear"></i></a>
     <!-- Deconnexion -->
-    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-      @csrf
-     <button type="submit" class="btn btn-link text-white text-decoration-none p-0 m-0">
-        <i class="bi bi-power"></i>
-    </button>
-    </form>
+    <!-- Profile icon dropdown -->
+    <div class="dropdown d-inline">
+      <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        <i class="bi bi-person-circle"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+              <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </nav>
