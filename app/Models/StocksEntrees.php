@@ -18,4 +18,10 @@ class StocksEntrees extends Model
     public function fournisseur()
     {
         return $this->belongsTo(Fournisseur::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
