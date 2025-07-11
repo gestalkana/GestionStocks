@@ -8,6 +8,11 @@
     <!-- Paramètre -->
     <a href="#" class="text-white text-decoration-none"><i class="bi bi-gear"></i></a>
     <!-- Deconnexion -->
-    <a href="#" class="text-white text-decoration-none"><i class="bi bi-power"></i></a>
+    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+      @csrf
+     <button type="submit" class="btn btn-link text-white text-decoration-none p-0 m-0">
+        <i class="bi bi-power"></i>
+    </button>
+    </form>
   </div>
 </nav>

@@ -4,4 +4,5 @@
 @section('content')
 <h1 class="text-primary">Tableau de bord </h1>
 <p class="lead">Gérez vos stocks, fournisseurs, et mouvements avec simplicité.</p>
-@endsection
+@endsection 
+
