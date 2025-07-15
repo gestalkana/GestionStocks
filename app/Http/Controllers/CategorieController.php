@@ -61,17 +61,23 @@ class CategorieController extends Controller
     /**
      * Mettre à jour une catégorie.
      */
-    public function update(Request $request, Categorie $categorie)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-        ]);
+        $categorie = Categorie::findOrFail($id);
+        $categorie->reference = $request->input('reference');
+        $categorie->nom = $request->input('nom');
+        $categorie->description = $request->input('description');
+        $categorie->save();
 
-        $categorie->update($request->only('name', 'description'));
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Catégorie mise à jour']);
+        }
 
-        return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour.');
+        // Fallback si pas AJAX
+        return redirect()->back()->with('success', 'Catégorie mise à jour');
     }
+
+
 
     /**
      * Supprimer une catégorie.

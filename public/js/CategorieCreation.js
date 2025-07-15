@@ -1,4 +1,4 @@
-
+//Catégorie Creation
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('createCategoryForm');
   const modalElement = document.getElementById('createCategoryModal');
@@ -88,4 +88,3 @@ document.addEventListener('DOMContentLoaded', function () {
     tbody.appendChild(tr);
   }
 });
-

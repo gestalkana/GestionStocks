@@ -1,11 +1,10 @@
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
     <h2>Liste des Catégories</h2>
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
       <i class="bi bi-plus-circle me-1"></i> Ajouter une catégorie
     </button>
   </div>
-
 
   <table class="table table-striped table-hover align-middle">
     <thead class="table-primary">
@@ -35,7 +34,18 @@
         </td>
         <td>{{ $category->created_at->format('d/m/Y') }}</td>
         <td>
-          <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
+          <!-- Bouton Modifier -->
+          <a href="#" class="btn btn-sm btn-outline-primary edit-category-btn"
+             data-id="{{ $category->id }}"
+             data-reference="{{ $category->reference }}"
+             data-nom="{{ $category->nom }}"
+             data-description="{{ $category->description }}"
+             data-bs-toggle="modal"
+             data-bs-target="#editCategoryModal">
+             Modifier
+          </a>
+
+
           <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
             @csrf
             @method('DELETE')
@@ -85,6 +95,42 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
           <button type="submit" class="btn btn-primary">Créer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal édition catégorie -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editCategoryForm">
+      @csrf
+      @method('PUT')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCategoryModalLabel">Modifier la catégorie</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editCategoryId">
+          <div class="mb-3">
+            <label for="editCategoryReference" class="form-label">Référence</label>
+            <input type="text" name="reference" class="form-control" id="editCategoryReference" required>
+          </div>
+          <div class="mb-3">
+            <label for="editCategoryName" class="form-label">Nom de la catégorie</label>
+            <input type="text" name="nom" class="form-control" id="editCategoryName" required>
+          </div>
+          <div class="mb-3">
+            <label for="editCategoryDescription" class="form-label">Description</label>
+            <textarea name="description" class="form-control" id="editCategoryDescription" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>
       </div>
     </form>
