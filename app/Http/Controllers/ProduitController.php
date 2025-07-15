@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produit;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
@@ -10,10 +11,13 @@ class ProduitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return view('produits.index');
-    }
+   public function index()
+{
+    $produits = Produit::with('categorie')->paginate(10);
+    $categories = Categorie::withCount('produits')->get();
+
+    return view('produits.index', compact('produits', 'categories'));
+}
 
     /**
      * Show the form for creating a new resource.

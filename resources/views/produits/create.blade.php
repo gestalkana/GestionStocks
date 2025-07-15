@@ -73,7 +73,7 @@
 </style>
 @endpush
 
-<div class="row py-4">
+<div class="row mb-4">
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-header">
             <h4>
@@ -148,11 +148,11 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2 pt-3">
+                <div class="d-flex justify-content-around gap-2 pt-3">
                     <a href="/produits" class="btn btn-light">
                         <i class="bi bi-arrow-left"></i> Annuler
                     </a>
-                    <button type="submit" class="btn text-white" style="background: var(--accent);">
+                    <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save me-1"></i> Enregistrer
                     </button>
                 </div>

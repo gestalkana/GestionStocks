@@ -57,7 +57,7 @@
 
         {{-- 3. Catégories --}}
         <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="cat-tab">
-            @include('produits.categories.index')
+            @include('produits.categories.index', ['categories' => $categories])
         </div>
 
         {{-- 4. Import/Export (facultatif) --}}

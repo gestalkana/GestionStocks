@@ -10,7 +10,7 @@ class Categorie extends Model
     /** @use HasFactory<\Database\Factories\CategorieFactory> */
     use HasFactory;
 
-    protected $fillable = ['nom', 'description'];
+    protected $fillable = ['nom','reference', 'description'];
 
     public function produits()
     {

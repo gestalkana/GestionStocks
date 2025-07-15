@@ -17,6 +17,9 @@ Route::get('/home',[HomeController::class, 'index']
 Route::resource('produits', ProduitController::class
 )->middleware(['auth', 'verified']);
 
+Route::resource('categories', CategorieController::class
+)->middleware(['auth', 'verified']);
+
 Route::resource('fournisseurs', FournisseurController::class
 )->middleware(['auth', 'verified']);
 
@@ -43,8 +46,7 @@ require __DIR__.'/auth.php';
 /*Route::get('/', function () {
     return view('home');
 })->middleware(['auth', 'verified'])->name('home');
-
+*/
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-*/
