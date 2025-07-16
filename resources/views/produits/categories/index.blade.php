@@ -6,7 +6,8 @@
     </button>
   </div>
 
-  <table class="table table-striped table-hover align-middle">
+
+  <table class="table table-striped table-hover align-middle w-100">
     <thead class="table-primary">
       <tr>
         <th scope="col">#</th>
@@ -45,11 +46,10 @@
              Modifier
           </a>
 
-
-          <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+         <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+              @csrf
+              @method('DELETE')
+              <button class="btn btn-sm btn-outline-danger">Supprimer</button>
           </form>
         </td>
       </tr>

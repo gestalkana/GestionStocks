@@ -68,8 +68,6 @@
             @endunless
         </div>
     </div>
-
-
 @endsection
 
 
@@ -78,7 +76,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             const catTab = document.getElementById('cat-tab');
             const catPane = new bootstrap.Tab(catTab);
-            catPane.show();
+            catPane.show();const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'css/Mycss.css';
+            document.head.appendChild(link);
         });
     </script>
 @endif

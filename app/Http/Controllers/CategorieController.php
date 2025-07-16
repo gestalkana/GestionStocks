@@ -87,6 +87,6 @@ class CategorieController extends Controller
     {
         $categorie->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Catégorie supprimée.');
+        return redirect()->route('produits.index')->with('success', 'Catégorie supprimée.');
     }
 }
