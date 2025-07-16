@@ -46,7 +46,8 @@ require __DIR__.'/auth.php';
 /*Route::get('/', function () {
     return view('home');
 })->middleware(['auth', 'verified'])->name('home');
-*/
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+*/

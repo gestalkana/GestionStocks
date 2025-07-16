@@ -37,7 +37,9 @@
       return response.json();
     })
     .then(data => {
-      location.reload(); // Rafraîchir la page ou mettre à jour dynamiquement le tableau
+      //location.reload(); // Rafraîchir la page ou mettre à jour dynamiquement le tableau
+      window.location.href = '/produits?onglet=categories';
+      
     })
     .catch(error => {
       alert(error.message);

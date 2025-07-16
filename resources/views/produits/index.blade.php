@@ -71,3 +71,16 @@
 
 
 @endsection
+
+
+@if(request('onglet') === 'categories')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const catTab = document.getElementById('cat-tab');
+            const catPane = new bootstrap.Tab(catTab);
+            catPane.show();
+        });
+    </script>
+@endif
+
+

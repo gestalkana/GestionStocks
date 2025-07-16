@@ -74,7 +74,8 @@ class CategorieController extends Controller
         }
 
         // Fallback si pas AJAX
-        return redirect()->back()->with('success', 'Catégorie mise à jour');
+        // return redirect()->back()->with('success', 'Catégorie mise à jour');
+        return redirect()->route('produits.index', ['onglet' => 'categories'])->with('success', 'Catégorie mise à jour');
     }
 
 
