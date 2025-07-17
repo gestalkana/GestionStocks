@@ -8,58 +8,85 @@ use Illuminate\Http\Request;
 class CategorieController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des catégories.
      */
     public function index()
     {
-        //
+        // Récupère toutes les catégories avec le nombre de produits associés
+        $categories = Categorie::withCount('produits')->latest()->get();
+
+        return view('produits.categories.index', compact('categories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Afficher le formulaire de création d'une nouvelle catégorie.
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistrer une nouvelle catégorie.
      */
     public function store(Request $request)
     {
-        //
+         $validated = $request->validate([
+        'reference' => 'required|string',
+        'nom' => 'required|string',
+        'description' => 'nullable|string',
+        ]);
+
+        $categorie = Categorie::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'category' => $categorie->loadCount('produits')
+            ]);
+        }
+
+        return redirect()->route('produits.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Categorie $categorie)
-    {
-        //
-    }
+
 
     /**
-     * Show the form for editing the specified resource.
+     * Afficher le formulaire d'édition.
      */
     public function edit(Categorie $categorie)
     {
-        //
+        return view('categories.edit', compact('categorie'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mettre à jour une catégorie.
      */
-    public function update(Request $request, Categorie $categorie)
+    public function update(Request $request, $id)
     {
-        //
+        $categorie = Categorie::findOrFail($id);
+        $categorie->reference = $request->input('reference');
+        $categorie->nom = $request->input('nom');
+        $categorie->description = $request->input('description');
+        $categorie->save();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Catégorie mise à jour']);
+        }
+
+        // Fallback si pas AJAX
+        // return redirect()->back()->with('success', 'Catégorie mise à jour');
+        return redirect()->route('produits.index', ['onglet' => 'categories'])->with('success', 'Catégorie mise à jour');
     }
 
+
+
     /**
-     * Remove the specified resource from storage.
+     * Supprimer une catégorie.
      */
     public function destroy(Categorie $categorie)
     {
-        //
+        $categorie->delete();
+
+        return redirect()->route('categories.index')->with('success', 'Catégorie supprimée.');
     }
 }
