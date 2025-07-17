@@ -68,20 +68,10 @@
             @endunless
         </div>
     </div>
+
+    <!-- appel au modal des Catégories -->
+    @include('produits.categories.modalCreation')
+    @include('produits.categories.modalEdition')
+    @include('produits.categories.modalSuppression')
 @endsection
-
-
-@if(request('onglet') === 'categories')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const catTab = document.getElementById('cat-tab');
-            const catPane = new bootstrap.Tab(catTab);
-            catPane.show();const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'css/Mycss.css';
-            document.head.appendChild(link);
-        });
-    </script>
-@endif
-
 

@@ -71,20 +71,51 @@ document.addEventListener('DOMContentLoaded', function () {
     // Crée une nouvelle ligne
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${rowCount + 1}</td>
-      <td><div><strong>${category.nom}</strong></div></td>
-      <td>${category.description || '—'}</td>
-      <td><span class="badge bg-info text-dark">${category.products_count || 0}</span></td>
-      <td>${new Date(category.created_at).toLocaleDateString('fr-FR')}</td>
-      <td>
-        <a href="/categories/${category.id}/edit" class="btn btn-sm btn-outline-primary">Modifier</a>
-        <form action="/categories/${category.id}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
-          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-          <input type="hidden" name="_method" value="DELETE">
-          <button class="btn btn-sm btn-outline-danger">Supprimer</button>
-        </form>
-      </td>
-    `;
+  <td>${rowCount + 1}</td>
+  <td><div><strong>${category.nom}</strong></div></td>
+  <td>${category.description || '—'}</td>
+  <td><span class="badge bg-info text-dark">${category.products_count || 0}</span></td>
+  <td>${new Date(category.created_at).toLocaleDateString('fr-FR')}</td>
+  <td>
+    <!-- Bouton Modifier avec les attributs data-* pour le modal -->
+    <a href="#" class="btn btn-sm btn-outline-primary edit-category-btn"
+       data-id="${category.id}"
+       data-reference="${category.reference || ''}"
+       data-nom="${category.nom}"
+       data-description="${category.description || ''}"
+       data-bs-toggle="modal"
+       data-bs-target="#editCategoryModal">
+       Modifier
+    </a>
+
+    <!-- Formulaire de suppression -->
+    <form action="/categories/${category.id}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
+      <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
+      <input type="hidden" name="_method" value="DELETE">
+      <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+    </form>
+  </td>
+`;
+
     tbody.appendChild(tr);
+    // Ajout de la ligne dans le tableau
+    //document.querySelector('#categoryTable tbody').appendChild(tr);
+
+    // Réattacher l’événement sur le bouton "Modifier" de cette ligne
+    tr.querySelector('.edit-category-btn').addEventListener('click', function () {
+      const button = this;
+
+      // Remplir les champs du modal avec les attributs data-*
+      document.getElementById('editCategoryId').value = button.dataset.id;
+      document.getElementById('editCategoryReference').value = button.dataset.reference;
+      document.getElementById('editCategoryName').value = button.dataset.nom;
+      document.getElementById('editCategoryDescription').value = button.dataset.description;
+      
+     /* document.getElementById('editCategoryId').value = data.id;
+      document.getElementById('editCategoryName').value = data.nom;
+      document.getElementById('editCategoryReference').value = data.reference;
+      document.getElementById('editCategoryDescription').value = data.description;*/
+
+    });
   }
 });
