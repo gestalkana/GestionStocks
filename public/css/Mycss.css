@@ -16,7 +16,7 @@ body {
     }
 
     .sidebar {
-      height: 100vh;
+      min-height: 100vh;
       background-color: #1e293b;
       padding-top: 0.75rem;
     }
@@ -76,3 +76,19 @@ body {
 	.navbar a:hover {
 	  opacity: 0.8;
 	}
+ .hover-link {
+  background-color: 'darkblue';
+  border-radius: 15px;
+  border: 1;
+ }
+
+ .container {
+  display: flex;
+  min-height: 100vh; /* Fait en sorte que la hauteur suive le contenu */
+}
+
+.main-content {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 20px;
+}

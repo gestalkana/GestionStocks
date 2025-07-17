@@ -1,7 +1,15 @@
 <nav class="navbar">
-  <span class="navbar-brand">
-  	<i class="bi bi-box-seam"></i> Gestion des stocks
-  </span>
+  <div class="d-flex align-items-center gap-3">
+      <span class="navbar-brand">
+      	<i class="bi bi-box-seam"></i> Gestion des stocks
+      </span>
+      {{-- Titre dynamique de la page --}}
+      @hasSection('Page-title')
+        <h1 class="h5 fw-semibold mb-0 text-white d-none d-md-block">
+            @yield('Page-title')
+        </h1>
+      @endif
+  </div>
   <div class="d-flex align-items-center gap-3">
     <!-- Notification -->
     <a href="#" class="text-white text-decoration-none"><i class="bi bi-bell"></i></a>

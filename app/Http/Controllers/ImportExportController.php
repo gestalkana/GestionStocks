@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StocksSorties;
 use Illuminate\Http\Request;
 
-class StocksSortiesController extends Controller
+class ImportExportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('stocksSorties.index');
+        //
     }
 
     /**
@@ -34,7 +33,7 @@ class StocksSortiesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Stocks_Sorties $stocks_Sorties)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +41,7 @@ class StocksSortiesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Stocks_Sorties $stocks_Sorties)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +49,7 @@ class StocksSortiesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Stocks_Sorties $stocks_Sorties)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +57,7 @@ class StocksSortiesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stocks_Sorties $stocks_Sorties)
+    public function destroy(string $id)
     {
         //
     }

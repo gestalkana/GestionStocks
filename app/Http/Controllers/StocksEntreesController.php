@@ -12,7 +12,7 @@ class StocksEntreesController extends Controller
      */
     public function index()
     {
-        //
+        return view('stocksEntrees.index');
     }
 
     /**
