@@ -27,7 +27,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/{{ asset('js/CaseAcocherProduit.js') }}"></script>
-  <script src="{{ asset('js/CategorieCreation.js') }}"></script>
-  <script src="{{ asset('js/CategorieEdition.js') }}"></script>
+  <script src="{{ asset('js/categories/CategorieCreation.js') }}"></script>
+  <script src="{{ asset('js/categories/CategorieEdition.js') }}"></script>
+  <script src="{{ asset('js/categories/CategorieSuppression.js') }}"></script>
 </body>
 </html>
