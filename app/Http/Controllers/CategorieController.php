@@ -18,6 +18,13 @@ class CategorieController extends Controller
         return view('produits.categories.index', compact('categories'));
     }
 
+    public function show(Categorie $categorie)
+    {
+    // Optionnel : tu peux rediriger ou retourner une vue
+    return redirect()->route('categories.index');
+    }
+
+
     /**
      * Afficher le formulaire de création d'une nouvelle catégorie.
      */
@@ -93,14 +100,24 @@ class CategorieController extends Controller
     /**
      * Supprimer une catégorie.
      */
-    public function destroy(Categorie $categorie)
+    public function destroy($id)
     {
-    $nom = $categorie->nom; // Stocke le nom avant la suppression
-    $categorie->delete();
+    try {
+        $categorie = Categorie::findOrFail($id);
+        \Log::info('Suppression de la catégorie ' . $categorie->id);
 
-    return redirect()
-        ->route('produits.index')
-        ->with('success', "La catégorie \"$nom\" a été supprimée avec succès.");
+        $categorie->delete();
+
+        return response()->json(['success' => true, 'message' => 'Catégorie supprimée.'], 200);
+    } catch (\Exception $e) {
+        \Log::error('Erreur suppression : ' . $e->getMessage());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur : ' . $e->getMessage()
+        ], 500);
     }
+    }
+
 
 }

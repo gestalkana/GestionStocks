@@ -10,7 +10,8 @@
         <p id="modal-delete-message">Êtes-vous sûr de vouloir supprimer cette catégorie ?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <!-- Bouton Annuler avec id -->
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelDeleteBtn">Annuler</button>
         <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Oui, supprimer</button>
       </div>
     </div>
