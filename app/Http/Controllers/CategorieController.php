@@ -70,7 +70,12 @@ class CategorieController extends Controller
         $categorie->save();
 
         if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Catégorie mise à jour']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Catégorie mise à jour',
+                'categorie' => $categorie  // Utile si tu veux mettre à jour une seule ligne du tableau
+            ]);
+
         }
 
         // Fallback si pas AJAX
@@ -78,6 +83,11 @@ class CategorieController extends Controller
         return redirect()->route('produits.index', ['onglet' => 'categories'])->with('success', 'Catégorie mise à jour');
     }
 
+    public function reloadCategoriesFragment()
+    {
+        $categories = Categorie::all();
+        return view('produits.categories.index', compact('categories'));
+    }
 
 
     /**
@@ -85,8 +95,12 @@ class CategorieController extends Controller
      */
     public function destroy(Categorie $categorie)
     {
-        $categorie->delete();
+    $nom = $categorie->nom; // Stocke le nom avant la suppression
+    $categorie->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Catégorie supprimée.');
+    return redirect()
+        ->route('produits.index')
+        ->with('success', "La catégorie \"$nom\" a été supprimée avec succès.");
     }
+
 }
