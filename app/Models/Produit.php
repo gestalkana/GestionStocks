@@ -10,7 +10,16 @@ class Produit extends Model
     /** @use HasFactory<\Database\Factories\ProduitFactory> */
     use HasFactory;
 
-    protected $fillable = ['nom', 'description', 'prix_unitaire', 'categorie_id'];
+    protected $fillable = [
+        'nom',
+        'code_produit',
+        'description',
+        'prix_unitaire',
+        'prix_achat',
+        'date_expiration',
+        'categorie_id',
+    ];
+
 
     public function categorie()
     {

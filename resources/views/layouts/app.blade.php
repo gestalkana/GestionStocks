@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title','Gestion des stocks')</title>
+  <!-- bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- icon bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- sweetAlert2 -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/Mycss.css">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -24,9 +28,12 @@
       </main>
     </div>
   </div>
-
+  <!-- Bootstrap.js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/{{ asset('js/CaseAcocherProduit.js') }}"></script>
+  <!-- SweetAlert2.js -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+  <script src="{{ asset('js/produits/CaseAcocherProduit.js') }}"></script>
+  <script src="{{ asset('js/produits/ProduitCreation.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieCreation.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieEdition.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieSuppression.js') }}"></script>

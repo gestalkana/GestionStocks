@@ -73,6 +73,7 @@
 </style>
 @endpush
 
+<!-- Formulaire de création de produit -->
 <div class="row mb-4">
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-header">
@@ -83,73 +84,90 @@
         </div>
 
         <div class="card-body">
-            <form action="/produits/store" method="POST" enctype="multipart/form-data">
-                @csrf <!-- Ajoute cette ligne si tu es sous Laravel -->
+            <form id="createProductForm" action="{{ route('produits.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
                 <div class="row g-4">
                     <div class="col-md-6">
+                        {{-- Nom du produit --}}
                         <div class="position-relative with-icon mb-2">
                             <i class="bi bi-tag input-icon"></i>
-                            <label class="form-label" for="name">Nom du produit</label>
-                            <input type="text" id="name" name="name" class="form-control"
-                                   placeholder="Ex. : Clé USB 32 Go" required>
+                            <label class="form-label" for="nom">Nom du produit</label>
+                            <input type="text" id="nom" name="nom" class="form-control"
+                                   placeholder="Ex. : Clé USB 32 Go" required value="{{ old('nom') }}">
                         </div>
 
+                        {{-- Code produit (SKU) --}}
                         <div class="position-relative with-icon mb-2">
                             <i class="bi bi-upc input-icon"></i>
-                            <label class="form-label" for="sku">Référence (SKU)</label>
-                            <input type="text" id="sku" name="sku" class="form-control"
-                                   placeholder="ABC‑1234">
+                            <label class="form-label" for="code_produit">Référence (SKU)</label>
+                            <input type="text" id="code_produit" name="code_produit" class="form-control"
+                                   placeholder="ABC-N‑1234" required value="{{ old('code_produit') }}">
                         </div>
 
+                        {{-- Catégorie --}}
                         <div class="position-relative with-icon mb-2">
                             <i class="bi bi-tags input-icon"></i>
-                            <label class="form-label" for="category_id">Catégorie</label>
-                            <select id="category_id" name="category_id" class="form-select" required>
-                                <option value="" disabled selected>Choisir…</option>
-                                <option value="1">Catégorie 1</option>
-                                <option value="2">Catégorie 2</option>
-                                <option value="3">Catégorie 3</option>
+                            <label class="form-label" for="categorie_id">Catégorie</label>
+                            <select id="categorie_id" name="categorie_id" class="form-select" required>
+                                <option value="" disabled {{ old('categorie_id') ? '' : 'selected' }}>Choisir…</option>
+                                @foreach($categories as $categorie)
+                                    <option value="{{ $categorie->id }}" {{ old('categorie_id') == $categorie->id ? 'selected' : '' }}>
+                                        {{ $categorie->nom }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
 
                     <div class="col-md-6">
+                        {{-- Prix vente --}}
                         <div class="position-relative with-icon mb-2">
                             <i class="bi bi-currency-dollar input-icon"></i>
-                            <label class="form-label" for="price">Prix unitaire</label>
-                            <input type="number" step="0.01" min="0" id="price" name="price"
-                                   class="form-control" placeholder="0.00" required>
+                            <label class="form-label" for="prix_unitaire">
+                                Prix unitaire en Ar (vente)
+                            </label>
+                            <input type="number" step="0.01" min="0" id="prix_unitaire" name="prix_unitaire"
+                                   class="form-control" placeholder="0.00" required value="{{ old('prix_unitaire') }}">
                         </div>
 
+                        {{-- Prix d'achat  --}}
                         <div class="position-relative with-icon mb-2">
-                            <i class="bi bi-stack input-icon"></i>
-                            <label class="form-label" for="quantity">Quantité en stock</label>
-                            <input type="number" min="0" id="quantity" name="quantity"
-                                   class="form-control" placeholder="0" required>
+                            <i class="bi bi-currency-dollar input-icon"></i>
+                            <label class="form-label" for="prix_achat">
+                                Prix d'achat en Ar
+                            </label>
+                            <input type="number" min="0" id="prix_achat" name="prix_achat"
+                            class="form-control" placeholder="0.00" 
+                            value="{{ old('prix_achat') }}">
                         </div>
-
+                        
+                        {{-- Date d'expiration --}}
                         <div class="position-relative with-icon mb-2">
-                            <i class="bi bi-image input-icon"></i>
-                            <label class="form-label" for="image">Photo (optionnel)</label>
-                            <input type="file" id="image" name="image" class="form-control"
-                                   accept="image/*">
+                            <i class="bi bi-calendar input-icon"></i> {{-- Icône de calendrier --}}
+                            <label class="form-label" for="date_expiration">
+                                Date d'expiration
+                            </label>
+                            <input type="date" id="date_expiration" name="date_expiration"
+                                   class="form-control"
+                                   value="{{ old('date_expiration') }}">
                         </div>
                     </div>
 
+                    {{-- Description --}}
                     <div class="col-12">
                         <div class="position-relative with-icon mb-2">
                             <i class="bi bi-text-left input-icon"></i>
                             <label class="form-label" for="description">Description</label>
                             <textarea id="description" name="description" rows="3"
                                       class="form-control"
-                                      placeholder="Détails, spécifications, etc."></textarea>
+                                      placeholder="Détails, spécifications, etc.">{{ old('description') }}</textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-around gap-2 pt-3">
-                    <a href="/produits" class="btn btn-light">
+                    <a href="{{ route('produits.index') }}" class="btn btn-light">
                         <i class="bi bi-arrow-left"></i> Annuler
                     </a>
                     <button type="submit" class="btn btn-primary">
