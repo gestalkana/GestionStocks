@@ -8,7 +8,7 @@ function fillEditForm(data) {
 
 // Fonction pour rattacher les événements aux boutons "modifier"
 function attachEditListeners() {
-  document.querySelectorAll('.edit-category-btn').forEach(button => {
+  document.querySelectorAll('.edit-categorie-btn').forEach(button => {
     button.addEventListener('click', function () {
       fillEditForm({
         id: this.dataset.id,
