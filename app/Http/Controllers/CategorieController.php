@@ -92,7 +92,8 @@ class CategorieController extends Controller
 
     public function reloadCategoriesFragment()
     {
-        $categories = Categorie::all();
+        //$categories = Categorie::all();
+        $categories = Categorie::withCount('produits')->latest()->get();
         return view('produits.categories.index', compact('categories'));
     }
 
