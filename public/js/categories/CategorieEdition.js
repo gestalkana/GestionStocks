@@ -8,7 +8,7 @@ function fillEditForm(data) {
 
 // Fonction pour rattacher les événements aux boutons "modifier"
 function attachEditListeners() {
-  document.querySelectorAll('.edit-category-btn').forEach(button => {
+  document.querySelectorAll('.edit-categorie-btn').forEach(button => {
     button.addEventListener('click', function () {
       fillEditForm({
         id: this.dataset.id,
@@ -54,9 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/produits/categories/reload')
           .then(response => response.text())
           .then(html => {
-            document.querySelector('#categories').innerHTML = html;
-            attachEditListeners(); // Reattacher les événements aux nouveaux boutons
-
+              document.querySelector('#categories').innerHTML = html;
+              // Reattacher les événements (Edit et supp) aux nouveaux boutons
+              attachEditListeners(); 
+              attachDeleteListeners();
               // Fermer le modal proprement
               bootstrap.Modal.getOrCreateInstance(document.getElementById('editCategoryModal')).hide();
 

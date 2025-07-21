@@ -46,10 +46,11 @@
     <div class="tab-content" id="produitTabsContent">
         {{-- 1. Liste des produits --}}
         <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
-            @include('produits.listeProduits')   
-            {{-- → resources/views/produits/show.blade.php --}}
+            <div id="produits-container">
+            {{-- → resources/views/produits/listeProduits.blade.php --}}
+            @include('produits.listeProduits', ['produits' => $produits]))  
+            </div>
         </div>
-
         {{-- 2. Ajouter un produit --}}
         <div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="add-tab">
             @include('produits.create') {{-- → formulaire d’ajout --}}
@@ -73,5 +74,8 @@
     @include('produits.categories.modalCreation')
     @include('produits.categories.modalEdition')
     @include('produits.categories.modalSuppression')
+    <!-- appel au modal des produits -->
+    @include('produits.modalUniteMesure')
+
 @endsection
 
