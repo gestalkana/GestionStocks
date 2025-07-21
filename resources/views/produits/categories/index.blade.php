@@ -7,7 +7,7 @@
   </div>
 
 
-  <table class="table table-striped table-hover align-middle w-100">
+  <table class="table table-sm table-striped table-hover align-middle w-100">
     <thead class="table-primary">
       <tr>
         <th scope="col">#</th>
@@ -19,37 +19,48 @@
       </tr>
     </thead>
     <tbody>
-      @forelse ($categories as $index => $category)
+      @forelse ($categories as $index => $categorie)
       <tr>
-        <td>{{ $index + 1 }}</td>
         <td>
           <div>
-            <strong>{{ $category->nom }}</strong>
+            <strong>{{ $categorie->reference }}</strong>
           </div>
         </td>
-        <td>{{ $category->description ?? '—' }}</td>
+        <td>{{ $categorie->nom }}</td>
+        <td>{{ $categorie->description ?? '—' }}</td>
         <td>
-          <span class="badge bg-info text-dark">
-            {{ $category->products_count ?? '0' }}
-          </span>
+         <span class="badge 
+         {{ $categorie->produits_count > 0 ? 'bg-info text-dark' : 'bg-danger text-white' }}">
+              {{ $categorie->produits_count }}
+        </span>
+
         </td>
-        <td>{{ $category->created_at->format('d/m/Y') }}</td>
+        <td>{{ $categorie->created_at->format('d/m/Y') }}</td>
         <td>
           <!-- Bouton Modifier -->
-          <a href="#" class="btn btn-sm btn-outline-primary edit-category-btn"
-             data-id="{{ $category->id }}"
-             data-reference="{{ $category->reference }}"
-             data-nom="{{ $category->nom }}"
-             data-description="{{ $category->description }}"
+          <a href="#" class="btn btn-sm btn-outline-primary edit-categorie-btn"
+             data-id="{{ $categorie->id }}"
+             data-reference="{{ $categorie->reference }}"
+             data-nom="{{ $categorie->nom }}"
+             data-description="{{ $categorie->description }}"
              data-bs-toggle="modal"
-             data-bs-target="#editCategoryModal">
+             data-bs-target="#editcategorieModal">
              Modifier
           </a>
 
-         <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+          <!-- Le formulaire  de suppression -->
+          <form action="{{ route('categories.destroy', $categorie) }}"
+                method="POST" class="d-inline delete-form"
+                data-categorie-id="{{ $categorie->id }}"
+                data-categorie-name="{{ $categorie->nom }}">
               @csrf
               @method('DELETE')
-              <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+              <button type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#confirmDeleteModal">
+                  Supprimer
+              </button>
           </form>
         </td>
       </tr>

@@ -10,8 +10,21 @@ class Produit extends Model
     /** @use HasFactory<\Database\Factories\ProduitFactory> */
     use HasFactory;
 
-    protected $fillable = ['nom', 'description', 'prix_unitaire', 'categorie_id'];
+    protected $fillable = [
+        'nom',
+        'code_produit',
+        'description',
+        'prix_unitaire',
+        'prix_achat',
+        //'date_expiration',//déplacer dans le mouvement de stock entrée
+        'categorie_id',
+        'unite_mesure_id'
+    ];
 
+    public function uniteMesure()
+    {
+        return $this->belongsTo(UniteMesure::class);
+    }
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);

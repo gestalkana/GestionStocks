@@ -1,5 +1,11 @@
 <div class="d-flex justify-content-between align-items-center mb-2">
   <h5>Liste des produits</h5>
+  {{-- Boutons de pagination --}}
+ <!-- Ajouter des liens de pagination -->
+<div class="d-flex justify-content-center">
+      {{ $produits->links('pagination::bootstrap-4') }}
+</div>
+
   <div class="d-flex align-items-center gap-3">
     <div id="selection-count" class="text-muted small">0 sélectionné</div>
     <div class="btn-group">
@@ -17,12 +23,17 @@
 </div>
 
 <!-- Liste des produits -->
-<table class="table table-striped table-hover align-middle">
+@php
+  //couleur de badge dans catégorie
+  $badgeColors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
+  $colorIndex = 0;
+@endphp
+
+
+<table class="table table-sm table-striped table-hover align-middle">
   <thead class="table-primary">
     <tr>
-      <th scope="col">
-        <input type="checkbox" id="selectAll" />
-      </th>
+      <th scope="col"><input type="checkbox" id="selectAll" /></th>
       <th scope="col">Référence</th>
       <th scope="col">Nom du produit</th>
       <th scope="col">Catégorie</th>
@@ -32,156 +43,56 @@
       <th scope="col">Statut</th>
     </tr>
   </thead>
-  <tbody>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF001</td>
-      <td>
-        <div>
-          <div>Nom du produit 1</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-info text-dark">Électronique</span></td>
-      <td>120</td>
-      <td>30,00 €</td>
-      <td>49,99 €</td>
-      <td><span class="badge bg-success">Disponible</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF002</td>
-      <td>
-        <div>
-          <div>Nom du produit 2</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-warning text-dark">Maison</span></td>
-      <td>0</td>
-      <td>15,00 €</td>
-      <td>29,50 €</td>
-      <td><span class="badge bg-danger">Rupture</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF003</td>
-      <td>
-        <div>
-          <div>Nom du produit 3</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-      <td>0</td>
-      <td>8,00 €</td>
-      <td>12,00 €</td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF001</td>
-      <td>
-        <div>
-          <div>Nom du produit 4</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-info text-dark">Électronique</span></td>
-      <td>120</td>
-      <td>30,00 €</td>
-      <td>49,99 €</td>
-      <td><span class="badge bg-success">Disponible</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF002</td>
-      <td>
-        <div>
-          <div>Nom du produit 5</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-warning text-dark">Maison</span></td>
-      <td>0</td>
-      <td>15,00 €</td>
-      <td>29,50 €</td>
-      <td><span class="badge bg-danger">Rupture</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF003</td>
-      <td>
-        <div>
-          <div>Nom du produit 6</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-      <td>0</td>
-      <td>8,00 €</td>
-      <td>12,00 €</td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF001</td>
-      <td>
-        <div>
-          <div>Nom du produit 1</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-info text-dark">Électronique</span></td>
-      <td>120</td>
-      <td>30,00 €</td>
-      <td>49,99 €</td>
-      <td><span class="badge bg-success">Disponible</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF002</td>
-      <td>
-        <div>
-          <div>Nom du produit 2</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-warning text-dark">Maison</span></td>
-      <td>0</td>
-      <td>15,00 €</td>
-      <td>29,50 €</td>
-      <td><span class="badge bg-danger">Rupture</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF003</td>
-      <td>
-        <div>
-          <div>Nom du produit 3</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-      <td>0</td>
-      <td>8,00 €</td>
-      <td>12,00 €</td>
-      <td><span class="badge bg-secondary">Archivé</span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="row-checkbox" /></td>
-      <td>REF001</td>
-      <td>
-        <div>
-          <div>Nom du produit 4</div>
-          <small class="text-muted">Description courte</small>
-        </div>
-      </td>
-      <td><span class="badge bg-info text-dark">Électronique</span></td>
-      <td>120</td>
-      <td>30,00 €</td>
-      <td>49,99 €</td>
-      <td><span class="badge bg-success">Disponible</span></td>
-    </tr>
+  <tbody id="produitsTableBody">
+    @forelse ($produits as $produit)
+      @php
+        $currentColor = $badgeColors[$colorIndex % count($badgeColors)];
+        $colorIndex++;
+
+      //contenu dans tooltip
+      $tooltipContent = "
+        <strong>{$produit->nom}</strong><br>
+        ".e(Str::limit($produit->description, 100))."<br>
+        <small style='color: #007bff; font-weight: 600;'>Cliquez pour voir plus</small>
+      ";
+      @endphp
+      <tr>
+        <td><input type="checkbox" class="row-checkbox" /></td>
+        <td>{{ $produit->code_produit }}</td>
+        <td>
+          <div>
+            <div>
+              <a href="{{ route('produits.show', $produit->id) }}" class="text-dark fw-semibold text-decoration-none hover-color" data-tippy-content="{{ $tooltipContent }}">
+                {{ $produit->nom }}
+              </a>
+            </div>
+            @if ($produit->description)
+              <small class="text-muted">{{ Str::limit($produit->description, 20) }}</small>
+            @endif
+          </div>
+        </td>
+
+        <td>
+          <span class="badge {{ $currentColor }}">
+            {{ $produit->categorie?->nom ?? 'N/A' }}
+          </span>
+        </td>
+        <td>{{ $produit->quantite ?? 0 }}</td>
+        <td>{{ number_format($produit->prix_achat ?? 0, 2, ',', ' ') }} Ar</td>
+        <td>{{ number_format($produit->prix_unitaire ?? 0, 2, ',', ' ') }} Ar</td>
+        <td>
+          @php
+            $status = $produit->quantite > 0 ? 'Disponible' : 'Rupture';
+          @endphp
+          <span class="badge {{ $status == 'Disponible' ? 'bg-success' : 'bg-danger' }}">{{ $status }}</span>
+        </td>
+      </tr>
+    @empty
+      <tr>
+        <td colspan="8" class="text-center text-muted">
+          Aucun produit enregistré pour l’instant.
+        </td>
+      </tr>
+    @endforelse
   </tbody>
 </table>

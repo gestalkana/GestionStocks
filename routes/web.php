@@ -17,7 +17,7 @@ Route::get('/home',[HomeController::class, 'index']
 Route::resource('produits', ProduitController::class
 )->middleware(['auth', 'verified']);
 
-Route::resource('/produits/categories', CategorieController::class
+Route::resource('categories', CategorieController::class
 )->middleware(['auth', 'verified']);
 
 Route::get('/produits/categories/reload', [CategorieController::class, 'reloadCategoriesFragment'])->name('categories.reload');
