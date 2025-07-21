@@ -1,6 +1,6 @@
 body {
       min-height: 100vh;
-      background-color: #f1f5f9;
+      background-color: #e5eff5;
       font-size: 0.95rem;
     }
 
@@ -71,33 +71,41 @@ body {
 	  font-size: 0.95rem;
 	  padding: 0.25rem 0.5rem;
 	  transition: opacity 0.2s;
-	}
+	 }
 
-	.navbar a:hover {
+	 .navbar a:hover {
 	  opacity: 0.8;
-	}
- .hover-link {
-  background-color: 'darkblue';
-  border-radius: 15px;
-  border: 1;
- }
+	 }
+   .hover-link {
+    background-color: 'darkblue';
+    border-radius: 15px;
+    border: 1;
+   }
 
- .container {
-  display: flex;
-  min-height: 100vh; /* Fait en sorte que la hauteur suive le contenu */
-}
+   .container {
+    display: flex;
+    min-height: 100vh; /* Fait en sorte que la hauteur suive le contenu */
+  }
 
-.main-content {
-  flex: 1;
-  background-color: #ffffff;
-  padding: 20px;
-}
+  .main-content {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+  }
 
-.table td,
-.table th {
-    white-space: nowrap;
-    vertical-align: middle;
-}
-.btn-group .btn {
-    display: inline-block;
-}
+  .table td,
+  .table th {
+      white-space: nowrap;
+      vertical-align: middle;
+  }
+  .btn-group .btn {
+      display: inline-block;
+  }
+  
+  /* effet sur le nom de produit */
+  .hover-color {
+  transition: color 0.2s ease;
+  }
+  .hover-color:hover {
+    color: #0d6efd !important;
+  }

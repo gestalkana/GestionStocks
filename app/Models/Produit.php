@@ -16,11 +16,15 @@ class Produit extends Model
         'description',
         'prix_unitaire',
         'prix_achat',
-        'date_expiration',
+        //'date_expiration',//déplacer dans le mouvement de stock entrée
         'categorie_id',
+        'unite_mesure_id'
     ];
 
-
+    public function uniteMesure()
+    {
+        return $this->belongsTo(UniteMesure::class);
+    }
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);

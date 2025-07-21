@@ -1,5 +1,11 @@
 <div class="d-flex justify-content-between align-items-center mb-2">
   <h5>Liste des produits</h5>
+  {{-- Boutons de pagination --}}
+ <!-- Ajouter des liens de pagination -->
+<div class="d-flex justify-content-center">
+      {{ $produits->links('pagination::bootstrap-4') }}
+</div>
+
   <div class="d-flex align-items-center gap-3">
     <div id="selection-count" class="text-muted small">0 sélectionné</div>
     <div class="btn-group">
@@ -18,11 +24,13 @@
 
 <!-- Liste des produits -->
 @php
+  //couleur de badge dans catégorie
   $badgeColors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
   $colorIndex = 0;
 @endphp
 
-<table class="table table-striped table-hover align-middle">
+
+<table class="table table-sm table-striped table-hover align-middle">
   <thead class="table-primary">
     <tr>
       <th scope="col"><input type="checkbox" id="selectAll" /></th>
@@ -40,18 +48,30 @@
       @php
         $currentColor = $badgeColors[$colorIndex % count($badgeColors)];
         $colorIndex++;
+
+      //contenu dans tooltip
+      $tooltipContent = "
+        <strong>{$produit->nom}</strong><br>
+        ".e(Str::limit($produit->description, 100))."<br>
+        <small style='color: #007bff; font-weight: 600;'>Cliquez pour voir plus</small>
+      ";
       @endphp
       <tr>
         <td><input type="checkbox" class="row-checkbox" /></td>
         <td>{{ $produit->code_produit }}</td>
         <td>
           <div>
-            <div>{{ $produit->nom }}</div>
+            <div>
+              <a href="{{ route('produits.show', $produit->id) }}" class="text-dark fw-semibold text-decoration-none hover-color" data-tippy-content="{{ $tooltipContent }}">
+                {{ $produit->nom }}
+              </a>
+            </div>
             @if ($produit->description)
-              <small class="text-muted">{{ Str::limit($produit->description, 40) }}</small>
+              <small class="text-muted">{{ Str::limit($produit->description, 20) }}</small>
             @endif
           </div>
         </td>
+
         <td>
           <span class="badge {{ $currentColor }}">
             {{ $produit->categorie?->nom ?? 'N/A' }}

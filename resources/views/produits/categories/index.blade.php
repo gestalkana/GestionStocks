@@ -7,7 +7,7 @@
   </div>
 
 
-  <table class="table table-striped table-hover align-middle w-100">
+  <table class="table table-sm table-striped table-hover align-middle w-100">
     <thead class="table-primary">
       <tr>
         <th scope="col">#</th>
@@ -21,17 +21,19 @@
     <tbody>
       @forelse ($categories as $index => $categorie)
       <tr>
-        <td>{{ $index + 1 }}</td>
         <td>
           <div>
-            <strong>{{ $categorie->nom }}</strong>
+            <strong>{{ $categorie->reference }}</strong>
           </div>
         </td>
+        <td>{{ $categorie->nom }}</td>
         <td>{{ $categorie->description ?? '—' }}</td>
         <td>
-          <span class="badge bg-info text-dark">
-            {{ $categorie->products_count ?? '0' }}
-          </span>
+         <span class="badge 
+         {{ $categorie->produits_count > 0 ? 'bg-info text-dark' : 'bg-danger text-white' }}">
+              {{ $categorie->produits_count }}
+        </span>
+
         </td>
         <td>{{ $categorie->created_at->format('d/m/Y') }}</td>
         <td>

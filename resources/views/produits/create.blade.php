@@ -142,15 +142,31 @@
                             value="{{ old('prix_achat') }}">
                         </div>
                         
-                        {{-- Date d'expiration --}}
-                        <div class="position-relative with-icon mb-2">
-                            <i class="bi bi-calendar input-icon"></i> {{-- Icône de calendrier --}}
-                            <label class="form-label" for="date_expiration">
-                                Date d'expiration
+                        {{-- Unité de mesure --}}
+                        <div class="position-relative with-icon mb-2 gap-2">
+                            <i class="bi bi-box-seam input-icon"></i> {{-- Icône --}}
+                            <label class="form-label" for="unite_mesure_id" >
+                                Unité de mesure
                             </label>
-                            <input type="date" id="date_expiration" name="date_expiration"
-                                   class="form-control"
-                                   value="{{ old('date_expiration') }}">
+    
+                            <div class="input-group">
+                                <select id="unite_mesure_id" name="unite_mesure_id" class="form-select">
+                                    <option value="">-- Sélectionnez une unité --</option>
+                                    @foreach($uniteMesure as $unite)
+                                        <option value="{{ $unite->id }}" {{ old('unite_mesure_id') == $unite->id ? 'selected' : '' }}>
+                                            {{ $unite->nom }} ({{ $unite->symbole }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button 
+                                    class="btn btn-outline-primary" 
+                                    type="button" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modalAjouterUnite"
+                                    title="Ajouter une nouvelle unité">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -167,7 +183,7 @@
                 </div>
 
                 <div class="d-flex justify-content-around gap-2 pt-3">
-                    <a href="{{ route('produits.index') }}" class="btn btn-light">
+                    <a href="{{ route('produits.index') }}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Annuler
                     </a>
                     <button type="submit" class="btn btn-primary">

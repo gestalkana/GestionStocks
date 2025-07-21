@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('produits', function (Blueprint $table) {
-            $table->date('date_expiration')->nullable();
-            $table->decimal('prix_achat', 10, 2)->nullable();
+            $table->unsignedBigInteger('unite_mesure_id')->nullable()->after('id');
+
+            // Ajout de la contrainte de clé étrangère
+            $table->foreign('unite_mesure_id')
+                  ->references('id')
+                  ->on('unite_mesures')
+                  ->onDelete('set null'); // ou 'cascade' selon le besoin
         });
     }
 
@@ -23,7 +28,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('produits', function (Blueprint $table) {
-            $table->dropColumn(['date_expiration', 'prix_achat']);
+            $table->dropForeign(['unite_mesure_id']);
+            $table->dropColumn('unite_mesure_id');
         });
     }
 };

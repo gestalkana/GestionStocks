@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
 
-
                 form.reset();
                 clearErrors();
                 addProductToTable(data.produit);
@@ -89,7 +88,82 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+function addProductToTable(produit) {
+    const tbody = document.getElementById('produitsTableBody');
+    if (!tbody) return;
 
+    const tr = document.createElement('tr');
+
+    const statut = (produit.quantite && produit.quantite > 0) ? 'Disponible' : 'Rupture';
+    const statutBadge = statut === 'Disponible' ? 'bg-success' : 'bg-danger';
+    const quantite = produit.quantite ?? 0;
+
+    const prixAchat = parseFloat(produit.prix_achat || 0).toLocaleString('fr-FR', {
+        style: 'currency',
+        currency: 'MGA',
+        minimumFractionDigits: 2
+    }).replace('MGA', 'Ar');
+
+    const prixVente = parseFloat(produit.prix_unitaire || 0).toLocaleString('fr-FR', {
+        style: 'currency',
+        currency: 'MGA',
+        minimumFractionDigits: 2
+    }).replace('MGA', 'Ar');
+
+    // Tooltip
+    const tooltipContent = `
+        <strong>${produit.nom}</strong><br>
+        ${produit.description ? produit.description.substring(0, 100) : ''}<br>
+        <small style="color: #007bff; font-weight: 600;">Cliquez pour voir plus</small>
+    `;
+
+    const link = document.createElement('a');
+    link.href = `/produits/${produit.id}`;
+    link.className = 'text-dark fw-semibold text-decoration-none hover-color';
+    link.setAttribute('data-tippy-content', tooltipContent);
+    link.textContent = produit.nom;
+
+    // td pour le nom + description
+    const tdNom = document.createElement('td');
+    const divWrapper = document.createElement('div');
+    const divNom = document.createElement('div');
+    divNom.appendChild(link);
+    divWrapper.appendChild(divNom);
+
+    if (produit.description) {
+        const small = document.createElement('small');
+        small.className = 'text-muted';
+        small.textContent = produit.description.substring(0, 40);
+        divWrapper.appendChild(small);
+    }
+
+    tdNom.appendChild(divWrapper);
+
+    // Construction des autres <td>
+    const cells = [
+        `<td><input type="checkbox" class="row-checkbox" /></td>`,
+        `<td>${produit.code_produit}</td>`,
+        tdNom.outerHTML, // insère le bloc HTML proprement
+        `<td><span class="badge bg-secondary">${produit.categorie?.nom ?? 'N/A'}</span></td>`,
+        `<td>${quantite}</td>`,
+        `<td>${prixAchat}</td>`,
+        `<td>${prixVente}</td>`,
+        `<td><span class="badge ${statutBadge}">${statut}</span></td>`,
+    ];
+
+    tr.innerHTML = cells.join('');
+    tbody.prepend(tr);
+
+    // Appliquer tippy (assure-toi qu'il est bien chargé)
+    tippy('[data-tippy-content]', {
+        allowHTML: true,
+        placement: 'bottom',
+        theme: 'light-border',
+        animation: 'fade',
+    });
+}
+
+/*
 function addProductToTable(produit) {
     const tbody = document.getElementById('produitsTableBody');
 
@@ -118,7 +192,9 @@ function addProductToTable(produit) {
         <td>${produit.code_produit}</td>
         <td>
             <div>
-                <div>${produit.nom}</div>
+                <div>
+                ${produit.nom}
+                </div>
                 ${produit.description ? `<small class="text-muted">${produit.description}</small>` : ''}
             </div>
         </td>
@@ -135,3 +211,4 @@ function addProductToTable(produit) {
 
     tbody.prepend(tr);
 }
+*/

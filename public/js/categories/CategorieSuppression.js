@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(html => {
       document.querySelector('#categories').innerHTML = html;
 
-      // Reattacher les écouteurs après mise à jour du DOM
+      // Reattacher les événements (Edit et Supp) aux nouveaux boutons
+      attachEditListeners();
       attachDeleteListeners();
-
       // Fermer le modal
       bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmDeleteModal')).hide();
       setTimeout(forceCleanModal, 350);

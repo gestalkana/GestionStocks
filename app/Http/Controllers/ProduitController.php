@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Produit;
 use App\Models\Categorie;
+use App\Models\StocksEntrees;
+use App\Models\StocksSorties;
+use App\Models\UniteMesure;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
@@ -11,12 +14,19 @@ class ProduitController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index()
+   public function index(Request $request)
     {
-    $produits = Produit::with('categorie')->paginate(10);
-    $categories = Categorie::withCount('produits')->get();
+        $produits = Produit::with('categorie')->paginate(10);
+        // Récupère toutes les catégories avec le nombre de produits associés
+        $categories = Categorie::withCount('produits')->latest()->get();
+        // Récupère toutes les unités de mesure
+        $uniteMesure = UniteMesure::all();
 
-    return view('produits.index', compact('produits', 'categories'));
+        if ($request->ajax()) {
+            return view('produits.listeProduits', compact('produits'))->render();
+        }
+
+        return view('produits.index', compact('produits', 'categories', 'uniteMesure'));
     }
 
     /**
@@ -25,7 +35,9 @@ class ProduitController extends Controller
     public function create()
     {
         $categories = Categorie::all(); // Récupère toutes les catégories
-        return view('produits.create', compact('categories'));
+        // Récupère toutes les unités de mesure
+        $uniteMesure = UniteMesure::all();
+        return view('produits.create', compact('categories', 'uniteMesure'));
     }
 
     /**
@@ -62,8 +74,9 @@ class ProduitController extends Controller
      */
     public function show(Produit $produit)
     {
-        //
+    return view('produits.show', compact('produit'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

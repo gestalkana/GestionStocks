@@ -8,7 +8,13 @@ class StocksEntrees extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['produit_id', 'fournisseur_id', 'quantite', 'date_entree'];
+    protected $fillable = [
+        'produit_id', 
+        'fournisseur_id', 
+        'quantite', 
+        'date_entree', 
+        'date_expiration'
+    ];
 
     public function produit()
     {
