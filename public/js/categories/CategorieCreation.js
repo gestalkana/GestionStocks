@@ -19,23 +19,25 @@ document.addEventListener('DOMContentLoaded', function () {
       body: formData
     })
     .then(async response => {
-  if (!response.ok) {
-    const text = await response.text();
-    console.log('Erreur réponse:', text);
-    if (response.status === 422) {
-      const data = JSON.parse(text);
-      handleErrors(data.errors);
-    } else {
-      throw new Error('Erreur serveur: ' + text);
-    }
-  } else {
-    return response.json();
-  }
-})
+      if (!response.ok) {
+        const text = await response.text();
+        console.log('Erreur réponse:', text);
+        if (response.status === 422) {
+          const data = JSON.parse(text);
+          handleErrors(data.errors);
+        } else {
+          throw new Error('Erreur serveur: ' + text);
+        }
+      } else {
+        return response.json();
+      }
+    })
     .then(data => {
       if (data) {
         // Supposons que la réponse contient la nouvelle catégorie
         addCategoryToTable(data.category); // Fonction à créer pour mettre à jour le tableau
+        //Message via fonction sweeteAlerte
+        showSuccessAlert('create', 'catégorie');
         form.reset();
         modal.hide();
       }
@@ -71,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Crée une nouvelle ligne
     const tr = document.createElement('tr');
     tr.innerHTML = `
-  <td>${rowCount + 1}</td>
-  <td><div><strong>${category.nom}</strong></div></td>
+  <td><div><strong>${category.reference}</strong></div></td>
+  <td>${category.nom}</td>
   <td>${category.description || '—'}</td>
   <td><span class="badge bg-info text-dark">${category.products_count || 0}</span></td>
   <td>${new Date(category.created_at).toLocaleDateString('fr-FR')}</td>

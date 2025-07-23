@@ -1,4 +1,4 @@
-$(document).on('click', '.pagination a', function(e) {
+$(document).on('click', '.pagination-produits a', function(e) {
     e.preventDefault();
     var url = $(this).attr('href');
 
@@ -14,3 +14,4 @@ $(document).on('click', '.pagination a', function(e) {
         }
     });
 });
+

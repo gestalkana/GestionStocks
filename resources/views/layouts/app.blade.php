@@ -12,7 +12,7 @@
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css" rel="stylesheet">
   <!-- Tippy.js core -->
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
-  <link rel="stylesheet" type="text/css" href="css/Mycss.css">
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/Mycss.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
@@ -40,13 +40,22 @@
   <script src="{{ asset('js/Tooltip.js') }}"></script>
   <!-- Jquery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Alerte -->
+  <script src="{{ asset('js/alerte/actionMessage.js') }}"></script>
   <!-- AJAX  et jquery-->
+  <!-- Produit -->
   <script src="{{ asset('js/produits/PaginationProduit.js') }}"></script>
   <script src="{{ asset('js/produits/CaseAcocherProduit.js') }}"></script>
   <script src="{{ asset('js/produits/ProduitCreation.js') }}"></script>
+  <script src="{{ asset('js/produits/ProduitEdition.js') }}"></script>
+  <script src="{{ asset('js/produits/ProduitSuppression.js') }}"></script>
   <script src="{{ asset('js/produits/UniteMesure.js') }}"></script>
+  <!-- Categorie -->
   <script src="{{ asset('js/categories/CategorieCreation.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieEdition.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieSuppression.js') }}"></script>
+  <!-- Fournisseur -->
+  <script src="{{ asset('js/fournisseurs/FournisseurCreation.js') }}"></script>
+  <script src="{{ asset('js/fournisseurs/FournisseurEdition.js') }}"></script>
 </body>
 </html>

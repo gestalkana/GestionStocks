@@ -13,7 +13,8 @@ class CategorieController extends Controller
     public function index()
     {
         // Récupère toutes les catégories avec le nombre de produits associés
-        $categories = Categorie::withCount('produits')->latest()->get();
+        $categories = Categorie::withCount('produits')->latest()->paginate(10);
+        
 
         return view('produits.categories.index', compact('categories'));
     }
@@ -54,8 +55,6 @@ class CategorieController extends Controller
 
         return redirect()->route('produits.index');
     }
-
-
 
     /**
      * Afficher le formulaire d'édition.
