@@ -1,5 +1,5 @@
 {{-- resources/views/produits/index.blade.php --}}
-@extends('layouts.app')   {{-- ou le nom de ton layout principal --}}
+@extends('layouts.app')   {{-- layout principal --}}
 
 @section('title', 'Produits')
 
@@ -48,7 +48,7 @@
         <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
             <div id="produits-container">
             {{-- → resources/views/produits/listeProduits.blade.php --}}
-            @include('produits.listeProduits', ['produits' => $produits]))  
+            @include('produits.listeProduits', ['produits' => $produits])  
             </div>
         </div>
         {{-- 2. Ajouter un produit --}}
@@ -58,12 +58,14 @@
 
         {{-- 3. Catégories --}}
         <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="cat-tab">
-            @include('produits.categories.index', ['categories' => $categories])
+            <div id="categories-container">
+                @include('produits.categories.index', ['categories' => $categories])
+            </div>
         </div>
 
         {{-- 4. Import/Export (facultatif) --}}
         <div class="tab-pane fade" id="import" role="tabpanel" aria-labelledby="imp-tab">
-            @includeWhen(config('app.enable_import'), 'produits.partials.import-export')
+        @includeWhen(config('app.enable_import'), 'produits.partials.import-export')
             @unless(config('app.enable_import'))
                 <p class="text-muted">Fonction non activée pour le moment.</p>
             @endunless
@@ -76,6 +78,5 @@
     @include('produits.categories.modalSuppression')
     <!-- appel au modal des produits -->
     @include('produits.modalUniteMesure')
-
 @endsection
 

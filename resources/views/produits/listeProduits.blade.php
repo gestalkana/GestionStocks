@@ -1,11 +1,5 @@
 <div class="d-flex justify-content-between align-items-center mb-2">
   <h5>Liste des produits</h5>
-  {{-- Boutons de pagination --}}
- <!-- Ajouter des liens de pagination -->
-<div class="d-flex justify-content-center">
-      {{ $produits->links('pagination::bootstrap-4') }}
-</div>
-
   <div class="d-flex align-items-center gap-3">
     <div id="selection-count" class="text-muted small">0 sélectionné</div>
     <div class="btn-group">
@@ -96,3 +90,10 @@
     @endforelse
   </tbody>
 </table>
+  {{-- Boutons de pagination --}}
+ <!-- Ajouter des liens de pagination -->
+<div class="d-flex justify-content-center mb-4">
+  <div class="pagination pagination-produits">
+    {{ $produits->links('pagination::bootstrap-4') }}
+  </div>
+</div>
