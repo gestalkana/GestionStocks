@@ -1,13 +1,12 @@
 
   <div class="d-flex justify-content-between align-items-center mb-2">
-    <h2>Liste des Catégories</h2>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+    <h5>Liste des Catégories</h5>
+    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
       <i class="bi bi-plus-circle me-1"></i> Ajouter une catégorie
     </button>
   </div>
 
-
-  <table class="table table-sm table-striped table-hover align-middle w-100">
+  <table class="table table-sm table-striped table-hover align-middle w-100 mb-4">
     <thead class="table-primary">
       <tr>
         <th scope="col">#</th>
@@ -71,4 +70,3 @@
       @endforelse
     </tbody>
   </table>
-

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class StocksEntrees extends Model
@@ -13,7 +13,8 @@ class StocksEntrees extends Model
         'fournisseur_id', 
         'quantite', 
         'date_entree', 
-        'date_expiration'
+        'date_expiration',
+        'user_id',
     ];
 
     public function produit()

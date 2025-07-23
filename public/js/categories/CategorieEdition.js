@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
           .then(response => response.text())
           .then(html => {
               document.querySelector('#categories').innerHTML = html;
+              showSuccessAlert('update', 'catégorie');
               // Reattacher les événements (Edit et supp) aux nouveaux boutons
               attachEditListeners(); 
               attachDeleteListeners();

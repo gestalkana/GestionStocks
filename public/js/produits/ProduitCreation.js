@@ -35,29 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data && data.produit) {
                 //alert(data.message || 'Produit créé avec succès');
                 //Message via sweetAlert2
-                /*Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    title: data.message || 'Produit créé avec succès',
-                    showConfirmButton: false,
-                    timer: 2500,
-                    timerProgressBar: true,
-                    background: '#f0fdf4',  // vert très clair
-                    color: '#065f46',       // vert foncé pour le texte
-                });*/
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Produit ajouté avec succès',
-                    text: data.message || 'Le produit a bien été enregistré.',
-                    showConfirmButton: false,
-                    timer: 2500,
-                    timerProgressBar: true,
-                    position: 'center', // <- Valeur Par défaut
-                    background: '#f0fdf4',
-                    color: '#065f46',
-                });
-
+                // Swal.fire({
+                //     icon: 'success',
+                //     title: 'Produit ajouté avec succès',
+                //     text: data.message || 'Le produit a bien été enregistré.',
+                //     showConfirmButton: false,
+                //     timer: 2500,
+                //     timerProgressBar: true,
+                //     position: 'center', // <- Valeur Par défaut
+                //     background: '#f0fdf4',
+                //     color: '#065f46',
+                // });
+                showSuccessAlert('create', 'produit');
 
                 form.reset();
                 clearErrors();
