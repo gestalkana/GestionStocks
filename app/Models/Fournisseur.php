@@ -12,8 +12,8 @@ class Fournisseur extends Model
 
     protected $fillable = ['nom', 'email', 'telephone', 'adresse'];
 
-    public function entrees()
+    public function StocksEntrees()
     {
-        return $this->hasMany(Entree::class);
+        return $this->hasMany(StocksEntrees::class);
     }
 }

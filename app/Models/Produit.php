@@ -30,14 +30,14 @@ class Produit extends Model
         return $this->belongsTo(Categorie::class);
     }
 
-    public function entrees()
+    public function StocksEntrees()
     {
-        return $this->hasMany(Entree::class);
+        return $this->hasMany(StocksEntrees::class);
     }
 
-    public function sorties()
+    public function StocksSorties()
     {
-        return $this->hasMany(Sortie::class);
+        return $this->hasMany(StocksSorties::class);
     }
 
 }
