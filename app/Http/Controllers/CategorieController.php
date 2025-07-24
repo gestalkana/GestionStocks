@@ -13,7 +13,7 @@ class CategorieController extends Controller
     public function index()
     {
         // Récupère toutes les catégories avec le nombre de produits associés
-        $categories = Categorie::withCount('produits')->latest()->paginate(10);
+        $categories = Categorie::withCount('produits')->latest()->get();
         
 
         return view('produits.categories.index', compact('categories'));
@@ -21,8 +21,8 @@ class CategorieController extends Controller
 
     public function show(Categorie $categorie)
     {
-    // Optionnel : tu peux rediriger ou retourner une vue
-    return redirect()->route('categories.index');
+        // Optionnel : tu peux rediriger ou retourner une vue
+        return redirect()->route('categories.index');
     }
 
 
