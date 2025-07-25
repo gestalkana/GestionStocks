@@ -34,9 +34,7 @@
                 @csrf
                 @method('DELETE')
                 <button type="button"
-                        class="btn btn-danger btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#confirmDeleteModal">
+                        class="btn btn-danger btn-sm">
                     <i class="bi bi-trash"></i>
                 </button>
             </form>

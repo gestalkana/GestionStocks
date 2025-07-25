@@ -1,93 +1,117 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialisation des écouteurs au chargement
-  attachDeleteListeners();
+window.categorieDeleteForm = null;
+window.categorieDeleteId = null;
 
-  // Écouteur pour le bouton de confirmation du modal
-  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-    if (!deleteForm || !deleteId || isNaN(deleteId)) {
-      alert('ID de catégorie invalide.');
-      return;
-    }
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    fetch(`/categories/${deleteId}`, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-TOKEN': csrfToken,
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(err => {
-          throw new Error(err.message || 'Erreur lors de la suppression');
-        });
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Réponse reçue :', data);
-      // Recharger dynamiquement la liste des catégories
-      return fetch('/produits/categories/reload');
-    })
-    .then(response => response.text())
-    .then(html => {
-      document.querySelector('#categories').innerHTML = html;
-      showSuccessAlert('delete', 'categorie');
-      // Reattacher les événements (Edit et Supp) aux nouveaux boutons
-      attachEditListeners();
-      attachDeleteListeners();
-      // Fermer le modal
-      bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmDeleteModal')).hide();
-      setTimeout(forceCleanModal, 350);
-    })
-    .catch(error => {
-      alert(error.message);
-    });
-  });
-});
-
-// Variables globales (si besoin)
-let deleteForm = null;
-let deleteId = null;
-
-function attachDeleteListeners() {
-  document.querySelectorAll('.delete-form').forEach(form => {
+function attachCategorieDeleteListeners() {
+  document.querySelectorAll('.delete-categorie-form').forEach(form => {
     const button = form.querySelector('button');
+    if (!button) return;
 
-    // Cloner le bouton pour retirer tous les anciens écouteurs
     const newButton = button.cloneNode(true);
     button.replaceWith(newButton);
 
     newButton.addEventListener('click', () => {
-      deleteForm = form;
-      deleteId = form.dataset.categorieId;
+      window.categorieDeleteForm = form;
+      window.categorieDeleteId = form.dataset.categorieId;
 
-      const categoryName = form.dataset.categorieName;
-      const message = `Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?`;
-      document.getElementById('modal-delete-message').textContent = message;
+      const categoryName = form.dataset.categorieName || '[Nom inconnu]';
+      const messageEl = document.getElementById('modal-delete-message-categorie');
+      if (messageEl) {
+        messageEl.textContent = `Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?`;
+      }
 
-      const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-      deleteModal.show();
+      const modalEl = document.getElementById('confirmDeleteModalCategorie');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+      } else {
+        console.error('Modal "confirmDeleteModalCategorie" introuvable.');
+      }
     });
   });
 }
 
-// BOUTON ANNULER - SUPPRESSION
-document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-  const deleteModalEl = document.getElementById('confirmDeleteModal');
-  let deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-  
-  if (!deleteModal) {
-    deleteModal = new bootstrap.Modal(deleteModalEl);
+window.attachCategorieDeleteListeners = attachCategorieDeleteListeners;
+
+document.addEventListener('DOMContentLoaded', () => {
+  attachCategorieDeleteListeners();
+
+  const confirmBtn = document.getElementById('confirmDeleteBtnCategorie');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', () => {
+      const deleteId = window.categorieDeleteId;
+
+      if (!deleteId || isNaN(deleteId)) {
+        alert('ID de catégorie invalide.');
+        return;
+      }
+
+      const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+      const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+      fetch(`/categories/${deleteId}`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        }
+      })
+      .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.message || 'Erreur lors de la suppression');
+        }
+        return data;
+      })
+      .then(data => {
+        return fetch('/produits/categories/reload');
+      })
+      .then(response => response.text())
+      .then(html => {
+        const categoriesContainer = document.querySelector('#categories');
+        if (categoriesContainer) {
+          categoriesContainer.innerHTML = html;
+        }
+
+        if (typeof showSuccessAlert === 'function') {
+          showSuccessAlert('delete', 'categorie');
+        }
+
+        if (typeof attachEditListeners === 'function') {
+          attachEditListeners();
+        }
+
+        if (typeof attachCategorieDeleteListeners === 'function') {
+          attachCategorieDeleteListeners();
+        }
+
+        const modalEl = document.getElementById('confirmDeleteModalCategorie');
+        if (modalEl) {
+          const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modal.hide();
+          setTimeout(forceCleanCategorieModal, 350);
+        }
+      })
+      .catch(error => {
+        console.error('Erreur JS (frontend) :', error);
+        alert(error.message);
+      });
+    });
   }
-  
-  deleteModal.hide();
-  
-  // Fermer proprement au cas où
-  bootstrap.Modal.getOrCreateInstance(deleteModalEl).hide();
-  
-  // Nettoyage éventuel après l’animation (350ms)
-  setTimeout(forceCleanModal, 350);
+
+  const cancelBtn = document.getElementById('cancelDeleteBtnCategorie');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      const modalEl = document.getElementById('confirmDeleteModalCategorie');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+        setTimeout(forceCleanCategorieModal, 350);
+      }
+    });
+  }
 });
+
+function forceCleanCategorieModal() {
+  window.categorieDeleteForm = null;
+  window.categorieDeleteId = null;
+}

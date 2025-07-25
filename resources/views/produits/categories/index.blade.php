@@ -14,7 +14,7 @@
         <th scope="col">Description</th>
         <th scope="col">Produits associés</th>
         <th scope="col">Date de création</th>
-        <th scope="col">Actions</th>
+        <th scope="col" class="text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -48,7 +48,7 @@
           </a>
 
           <!-- Le formulaire  de suppression -->
-          <form action="{{ route('categories.destroy', $categorie) }}"
+          <!-- <form action="{{ route('categories.destroy', $categorie) }}"
                 method="POST" class="d-inline delete-form"
                 data-categorie-id="{{ $categorie->id }}"
                 data-categorie-name="{{ $categorie->nom }}">
@@ -60,7 +60,19 @@
                       data-bs-target="#confirmDeleteModal">
                   Supprimer
               </button>
-          </form>
+          </form> -->
+          <form action="{{ route('categories.destroy', $categorie) }}"
+              method="POST"
+              class="d-inline delete-categorie-form"
+              data-categorie-id="{{ $categorie->id }}"
+              data-categorie-name="{{ $categorie->nom }}">
+            @csrf
+            @method('DELETE')
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger">
+                Supprimer
+            </button>
+        </form>
         </td>
       </tr>
       @empty
