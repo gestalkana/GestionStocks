@@ -102,21 +102,31 @@ class CategorieController extends Controller
      */
     public function destroy($id)
     {
-    try {
-        $categorie = Categorie::findOrFail($id);
-        \Log::info('Suppression de la catégorie ' . $categorie->id);
+        try {
+            $categorie = Categorie::findOrFail($id);
+            \Log::info('Suppression de la catégorie ' . $categorie->id);
 
-        $categorie->delete();
+            $categorie->delete();
 
-        return response()->json(['success' => true, 'message' => 'Catégorie supprimée.'], 200);
-    } catch (\Exception $e) {
-        \Log::error('Erreur suppression : ' . $e->getMessage());
+            return response()->json([
+                'success' => true, 
+                'message' => 'Catégorie supprimée.'
+            ], 200);
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Erreur : ' . $e->getMessage()
-        ], 500);
-    }
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Catégorie introuvable.'
+            ], 404); // réponse claire, pas une erreur serveur
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur suppression : ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur interne lors de la suppression.'
+            ], 500);
+        }
     }
 
 

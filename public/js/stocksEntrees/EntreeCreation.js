@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('createStocksEntreesForm');
 
+    // Vérifie que le formulaire existe avant d'ajouter l'écouteur
+    if (!form) return;
+
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -31,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data && data.entree) {
                 addEntryToTable(data.entree);
-                //showSuccessAlert('create', 'entrée de stock');
                 Swal.fire({
                     icon: 'success',
                     title: 'Stock ajouté avec succès',
@@ -39,12 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     showConfirmButton: false,
                     timer: 2500,
                     timerProgressBar: true,
-                    position: 'center', // <- Valeur Par défaut
+                    position: 'center',
                     background: '#f0fdf4',
                     color: '#065f46',
                 });
                 form.reset();
-                bootstrap.Collapse.getInstance(document.getElementById('formCollapse'))?.hide();
+                const collapseEl = document.getElementById('formCollapse');
+                if (collapseEl) {
+                    bootstrap.Collapse.getInstance(collapseEl)?.hide();
+                }
             }
         })
         .catch(error => {
@@ -70,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addEntryToTable(entree) {
         const tbody = document.querySelector('#stocksEntreesTable tbody');
+        if (!tbody) return;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -84,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <a href="/stocksEntrees/${entree.id}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-eye"></i></a>
                 <a href="/stocksEntrees/${entree.id}/edit" class="btn btn-sm btn-outline-warning me-1"><i class="bi bi-pencil-square"></i></a>
                 <form action="/stocksEntrees/${entree.id}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
-                    <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
+                    <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]')?.content}">
                     <input type="hidden" name="_method" value="DELETE">
                     <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                 </form>

@@ -59,6 +59,6 @@
   <script src="{{ asset('js/fournisseurs/FournisseurEdition.js') }}"></script>
   <!-- Stocks Entrees -->
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
-  <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script>
+  <!-- <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script> -->
 </body>
 </html>
