@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\StocksSorties;
+use App\Models\Produit;
+use App\Models\Fournisseur;
+use App\Models\StocksEntrees;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+
 
 class StocksSortiesController extends Controller
 {
@@ -12,8 +16,63 @@ class StocksSortiesController extends Controller
      */
     public function index()
     {
-        return view('stocksSorties.index');
+    // Récupération des sorties avec les relations
+    $stocksSorties = StocksSorties::with(['produit', 'user'])->orderBy('date_sortie')->get();
+
+    // Récupération des entrées groupées par produit et date
+    $stocksEntreesGrouped = StocksEntrees::selectRaw('produit_id, date_entree, SUM(COALESCE(quantite, 0)) as total_entree')
+        ->groupBy('produit_id', 'date_entree')
+        ->get();
+
+    // Préparer une map des entrées par produit et date
+    $entreesMap = [];
+
+    foreach ($stocksEntreesGrouped as $entree) {
+        $key = $entree->produit_id . '|' . $entree->date_entree;
+        $entreesMap[$key] = floatval($entree->total_entree ?? 0);
     }
+
+    // Liste enrichie avec stock avant/après
+    $stocksSortiesFormatted = [];
+
+    foreach ($stocksSorties as $sortie) {
+        $produitId = $sortie->produit_id;
+        $date = $sortie->date_sortie;
+
+        // Quantité totale entrée jusqu’à cette date
+        $totalEntree = StocksEntrees::where('produit_id', $produitId)
+            ->whereDate('date_entree', '<=', $date)
+            ->sum('quantite');
+        $totalEntree = floatval($totalEntree);
+
+        // Quantité totale sortie avant cette sortie (exclure l’actuelle)
+        $totalSortieAvant = StocksSorties::where('produit_id', $produitId)
+            ->whereDate('date_sortie', '<=', $date)
+            ->where('id', '<', $sortie->id)
+            ->sum('quantite');
+        $totalSortieAvant = floatval($totalSortieAvant);
+
+        // Quantité de la sortie actuelle (sécurisée)
+        $sortieQuantite = floatval($sortie->quantite ?? 0);
+
+        $stockAvant = $totalEntree - $totalSortieAvant;
+        $stockApres = $stockAvant - $sortieQuantite;
+
+        $sortie->stock_avant = $stockAvant;
+        $sortie->stock_apres = $stockApres;
+
+        $stocksSortiesFormatted[] = $sortie;
+    }
+
+    // Envoi des données à la vue
+    $produits = Produit::all(); // nécessaire pour le formulaire
+
+    return view('stocksSorties.index', [
+        'stocksSorties' => $stocksSortiesFormatted,
+        'produits' => $produits,
+    ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
