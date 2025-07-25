@@ -55,10 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
           .then(response => response.text())
           .then(html => {
               document.querySelector('#categories').innerHTML = html;
-              showSuccessAlert('update', 'catégorie');
+              if (typeof showSuccessAlert === 'function') {
+                 showSuccessAlert('update', 'catégorie');
+              }
               // Reattacher les événements (Edit et supp) aux nouveaux boutons
-              attachEditListeners(); 
-              attachDeleteListeners();
+              if (typeof attachEditListeners === 'function') {
+                attachEditListeners();
+              }
+
+              if (typeof attachDeleteListeners === 'function') {
+                attachDeleteListeners();
+              }
+             
               // Fermer le modal proprement
               bootstrap.Modal.getOrCreateInstance(document.getElementById('editCategoryModal')).hide();
 
