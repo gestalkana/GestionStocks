@@ -85,9 +85,30 @@ class StocksSortiesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'produit_id' => 'required|exists:produits,id',
+            'quantite' => 'required|numeric|min:1',
+            'date_sortie' => 'nullable|date',
+            'motif' => 'nullable|string|max:255',
+        ]);
+
+        $validated['date_sortie'] = $validated['date_sortie'] ?? Carbon::now();
+        $validated['user_id'] = auth()->id();
+
+        $sortie = StocksSorties::create($validated);
+
+        $sortie->load('produit', 'user');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'sortie' => $sortie,
+                'message' => 'Sortie enregistrée avec succès.'
+            ]);
+        }
+
+        return redirect()->route('stocksSorties.index')->with('success', 'Sortie enregistrée.');
     }
 
     /**
@@ -109,10 +130,26 @@ class StocksSortiesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Stocks_Sorties $stocks_Sorties)
+    public function update(Request $request, $id)
     {
-        //
+        $sortie = StocksSorties::findOrFail($id);
+
+        $validated = $request->validate([
+            'quantite' => 'required|numeric|min:1',
+            'motif' => 'nullable|string|max:255',
+            'date_sortie' => 'required|date|before_or_equal:today',
+        ]);
+
+        $sortie->update($validated);
+
+        $sortie->load('produit', 'user');
+
+        return response()->json([
+            'message' => 'Sortie mise à jour avec succès.',
+            'stocksSorties' => $sortie,
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.

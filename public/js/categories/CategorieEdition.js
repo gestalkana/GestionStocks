@@ -1,4 +1,3 @@
- // Fonction pour remplir les champs du formulaire de modification
 function fillEditForm(data) {
   document.getElementById('editCategoryId').value = data.id;
   document.getElementById('editCategoryName').value = data.nom;
@@ -6,7 +5,6 @@ function fillEditForm(data) {
   document.getElementById('editCategoryDescription').value = data.description;
 }
 
-// Fonction pour rattacher les événements aux boutons "modifier"
 function attachEditListeners() {
   document.querySelectorAll('.edit-categorie-btn').forEach(button => {
     button.addEventListener('click', function () {
@@ -24,13 +22,11 @@ function attachEditListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Attacher les événements aux boutons d'édition
   attachEditListeners();
 
-  // Gestion de la soumission du formulaire
   const editForm = document.getElementById('editCategoryForm');
   if (editForm) {
-    editForm.addEventListener('submit', function(e) {
+    editForm.addEventListener('submit', function (e) {
       e.preventDefault();
 
       const id = document.getElementById('editCategoryId').value;
@@ -45,68 +41,50 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: formData
       })
-      .then(response => {
-        if (!response.ok) throw new Error('Erreur lors de la mise à jour.');
-        return response.json();
-      })
-      .then(data => {
-        // Recharger la liste des catégories
-        fetch('/produits/categories/reload')
-          .then(response => response.text())
-          .then(html => {
-              document.querySelector('#categories').innerHTML = html;
-              if (typeof showSuccessAlert === 'function') {
-                 showSuccessAlert('update', 'catégorie');
-              }
-              // Reattacher les événements (Edit et supp) aux nouveaux boutons
-              if (typeof attachEditListeners === 'function') {
-                attachEditListeners();
-              }
+        .then(response => {
+          if (!response.ok) throw new Error('Erreur lors de la mise à jour.');
+          return response.json();
+        })
+        .then(data => {
+          fetch('/produits/categories/reload')
+            .then(response => response.text())
+            .then(html => {
+              const container = document.querySelector('#categories');
+              if (container) {
+                container.innerHTML = html;
+                if (typeof showSuccessAlert === 'function') {
+                  showSuccessAlert('update', 'catégorie');
+                }
+                if (typeof attachEditListeners === 'function') {
+                  attachEditListeners();
+                }
+                if (typeof attachDeleteListeners === 'function') {
+                  attachDeleteListeners();
+                }
 
-              if (typeof attachDeleteListeners === 'function') {
-                attachDeleteListeners();
+                const modalEl = document.getElementById('editCategoryModal');
+                if (modalEl) {
+                  bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+                  setTimeout(forceCleanModal, 350);
+                }
               }
-             
-              // Fermer le modal proprement
-              bootstrap.Modal.getOrCreateInstance(document.getElementById('editCategoryModal')).hide();
+            });
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    });
+  }
 
-              // Laisse Bootstrap faire l’animation, puis nettoie si besoin
-              setTimeout(forceCleanModal, 350); // après l’animation
-          });
-      })
-      .catch(error => {
-        alert(error.message);
-      });
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener('click', () => {
+      const editModalEl = document.getElementById('editCategoryModal');
+      if (editModalEl) {
+        const editModal = bootstrap.Modal.getInstance(editModalEl) || new bootstrap.Modal(editModalEl);
+        editModal.hide();
+        setTimeout(forceCleanModal, 350);
+      }
     });
   }
 });
-
-
-//BOUTON ANNULER - EDITION
-document.getElementById('cancelEditBtn').addEventListener('click', () => {
-  const editModalEl = document.getElementById('editCategoryModal');
-  let editModal = bootstrap.Modal.getInstance(editModalEl);
-  if (!editModal) {
-    editModal = new bootstrap.Modal(editModalEl);
-  }
-  editModal.hide();
-  // Fermer le modal proprement
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('editCategoryModal')).hide();
-
-  // Laisse Bootstrap faire l’animation, puis nettoie si besoin
-  setTimeout(forceCleanModal, 350); // après l’animation
-});
-
-
-function forceCleanModal() {
-  // Supprimer le backdrop
-  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-
-  // Vérifier qu'aucun autre modal n’est visible
-  const stillOpen = document.querySelector('.modal.show');
-  if (!stillOpen) {
-    document.body.classList.remove('modal-open');
-    document.body.style.paddingRight = '';
-    document.body.style.overflowY = ''; // optionnel, pour forcer le scroll
-  }
-}
