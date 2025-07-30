@@ -71,7 +71,7 @@
             {{ $produit->categorie?->nom ?? 'N/A' }}
           </span>
         </td>
-        <td>{{ $produit->quantite ?? 0 }}</td>
+        <td>{{ $produit->stock ?? 0 }}</td>
         <td>{{ number_format($produit->prix_achat ?? 0, 2, ',', ' ') }} Ar</td>
         <td>{{ number_format($produit->prix_unitaire ?? 0, 2, ',', ' ') }} Ar</td>
         <td>
