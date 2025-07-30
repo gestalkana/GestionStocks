@@ -32,6 +32,8 @@
   </div>
   <!-- Bootstrap.js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- SweetAlert2.js -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
    <!-- Tippy.js core -->
@@ -43,6 +45,8 @@
   <!-- Alerte -->
   <script src="{{ asset('js/alerte/actionMessage.js') }}"></script>
   <!-- AJAX  et jquery-->
+  <!-- Force clean modal -->
+  <script src="{{ asset('js/modalUtils.js') }}"></script>
   <!-- Produit -->
   <script src="{{ asset('js/produits/PaginationProduit.js') }}"></script>
   <script src="{{ asset('js/produits/CaseAcocherProduit.js') }}"></script>
@@ -59,6 +63,7 @@
   <script src="{{ asset('js/fournisseurs/FournisseurEdition.js') }}"></script>
   <!-- Stocks Entrees -->
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
+  <script src="{{ asset('js/stocksEntrees/EntreeEdition.js') }}"></script>
   <!-- <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script> -->
 </body>
 </html>

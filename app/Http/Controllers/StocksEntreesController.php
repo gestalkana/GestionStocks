@@ -131,7 +131,7 @@ class StocksEntreesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Stocks_Entrees $stocks_Entrees)
+    public function show(StocksEntrees $stocksEntrees)
     {
         //
     }
@@ -139,23 +139,68 @@ class StocksEntreesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Stocks_Entrees $stocks_Entrees)
+    public function edit(StocksEntrees $stocksEntrees)
     {
         //
+    }
+    //rechargement 
+     public function reload()
+    {
+        //$stocksEntrees = StocksEntrees::latest()->get();
+        $stocksEntrees = StocksEntrees::with(['produit', 'user'])->latest()->get();
+
+        return view('stocksEntrees.listeStocksEntree', compact('stocksEntrees'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Stocks_Entrees $stocks_Entrees)
-    {
-        //
-    }
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'quantite' => 'required|integer|min:1',
+        'date_expiration' => 'required|date|after_or_equal:today',
+    ]);
 
+    $entree = StocksEntrees::findOrFail($id);
+    $entree->quantite = $request->input('quantite');
+    $entree->date_expiration = $request->input('date_expiration');
+    $entree->save();
+
+    // Charger les relations
+    $entree->load(['produit', 'user']);
+
+    // Calcul dynamique du stock avant/après
+    $produitId = $entree->produit_id;
+    $date = $entree->date_entree;
+
+    $totalEntree = StocksEntrees::where('produit_id', $produitId)
+        ->whereDate('date_entree', '<=', $date)
+        ->where('id', '<=', $entree->id)
+        ->sum('quantite');
+
+    $totalSortie = StocksSorties::where('produit_id', $produitId)
+        ->whereDate('date_sortie', '<=', $date)
+        ->sum('quantite');
+
+    $entreeQuantite = floatval($entree->quantite ?? 0);
+    $stockApres = floatval($totalEntree) - floatval($totalSortie);
+    $stockAvant = $stockApres - $entreeQuantite;
+
+    $entree->stock_avant = $stockAvant;
+    $entree->stock_apres = $stockApres;
+
+    return response()->json([
+        'message' => 'Entrée mise à jour avec succès.',
+        'stocksEntrees' => $entree
+    ]);
+}
+
+   
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stocks_Entrees $stocks_Entrees)
+    public function destroy(StocksEntrees $stocksEntrees)
     {
         //
     }
