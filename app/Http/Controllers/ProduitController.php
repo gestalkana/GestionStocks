@@ -16,7 +16,15 @@ class ProduitController extends Controller
      */
    public function index(Request $request)
     {
-        $produits = Produit::with('categorie')->paginate(10);
+        //$produits = Produit::with('categorie')->paginate(10);
+        $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->paginate(10);
+
+        // Calcul du stock pour chaque produit
+        foreach ($produits as $produit) {
+            $totalEntrees = $produit->stocksEntrees->sum('quantite');
+            $totalSorties = $produit->stocksSorties->sum('quantite');
+            $produit->stock = $totalEntrees - $totalSorties;
+        }
         // Récupère toutes les catégories avec le nombre de produits associés
         $categories = Categorie::withCount('produits')->latest()->get();
 

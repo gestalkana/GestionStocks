@@ -48,19 +48,6 @@
           </a>
 
           <!-- Le formulaire  de suppression -->
-          <!-- <form action="{{ route('categories.destroy', $categorie) }}"
-                method="POST" class="d-inline delete-form"
-                data-categorie-id="{{ $categorie->id }}"
-                data-categorie-name="{{ $categorie->nom }}">
-              @csrf
-              @method('DELETE')
-              <button type="button"
-                      class="btn btn-sm btn-outline-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target="#confirmDeleteModal">
-                  Supprimer
-              </button>
-          </form> -->
           <form action="{{ route('categories.destroy', $categorie) }}"
               method="POST"
               class="d-inline delete-categorie-form"

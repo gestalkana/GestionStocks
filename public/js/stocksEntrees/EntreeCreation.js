@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>${entree.produit.nom}</td>
             <td>${entree.quantite}</td>
             <td>${new Date(entree.date_entree).toLocaleDateString('fr-FR')}</td>
+            <td>${new Date(entree.date_expiration).toLocaleDateString('fr-FR')}</td>
             <td>${entree.stock_avant ?? 0}</td>
             <td>${entree.stock_apres ?? 0}</td>
             <td>${entree.user?.name || '—'}</td>
