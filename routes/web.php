@@ -28,6 +28,9 @@ Route::resource('fournisseurs', FournisseurController::class
 Route::resource('stocksEntrees', StocksEntreesController::class
 )->middleware(['auth', 'verified']);
 
+Route::get('/stocksEntrees/reload', [StocksEntreesController::class, 
+            'reload'])->name('stocksEntrees.reload');
+
 Route::resource('stocksSorties', StocksSortiesController::class
 )->middleware(['auth', 'verified']);
 
