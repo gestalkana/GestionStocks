@@ -76,9 +76,19 @@
         <td>{{ number_format($produit->prix_unitaire ?? 0, 2, ',', ' ') }} Ar</td>
         <td>
           @php
-            $status = $produit->quantite > 0 ? 'Disponible' : 'Rupture';
+              $seuil_min = 10; // tu peux ajuster ce seuil selon le contexte
+              if ($produit->stock == 0) {
+                  $status = 'Rupture';
+                  $badgeClass = 'bg-danger';
+              } elseif ($produit->stock <= $seuil_min) {
+                  $status = 'Stock faible';
+                  $badgeClass = 'bg-warning';
+              } else {
+                  $status = 'Disponible';
+                  $badgeClass = 'bg-success';
+              }
           @endphp
-          <span class="badge {{ $status == 'Disponible' ? 'bg-success' : 'bg-danger' }}">{{ $status }}</span>
+          <span class="badge {{ $badgeClass }}">{{ $status }}</span>
         </td>
       </tr>
     @empty

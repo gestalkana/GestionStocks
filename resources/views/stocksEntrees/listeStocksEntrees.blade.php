@@ -16,11 +16,14 @@
     <tbody>
         @forelse ($stocksEntrees as $entree)
             <tr id="entree-row-{{ $entree->id }}">
-                <td>#MV{{ str_pad($entree->id, 4, '0', STR_PAD_LEFT) }}</td>
+                <td>#ES{{ str_pad($entree->id, 4, '0', STR_PAD_LEFT) }}</td>
                 <td>{{ $entree->produit->nom }}</td>
                 <td>{{ $entree->quantite }}</td>
                 <td>{{ \Carbon\Carbon::parse($entree->date_entree)->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::parse($entree->date_expiration)->format('d/m/Y') }}</td>
+                <td>{{ 
+                    $entree->date_expiration ? \Carbon\Carbon::parse($entree->date_expiration)->format('d/m/Y') : 'Non défini' 
+                    }}
+                </td>
                 <td>{{ $entree->stock_avant }}</td>
                 <td>{{ $entree->stock_apres }}</td>
                 <td>{{ $entree->user->name }}</td>

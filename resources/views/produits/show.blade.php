@@ -21,7 +21,8 @@
                     data-code="{{ $produit->code_produit }}"
                     data-prix-achat="{{ $produit->prix_achat }}"
                     data-prix-vente="{{ $produit->prix_unitaire }}"
-                    data-description="{{ $produit->description }}">
+                    data-description="{{ $produit->description }}"
+                    data-unite="{{ $produit->uniteMesure->nom ?? '' }}">
                 <i class="bi bi-pencil-square" title="Modifier"></i>
             </button>
 
@@ -101,7 +102,7 @@
             <!-- Unité de Mesure -->
             <div class="col-md-4">
                 <div class="form-floating">
-                    <input type="text" readonly class="form-control form-control-sm" id="prix_achat" value="{{ $produit->UniteMesure?->nom }}">
+                    <input type="text" readonly class="form-control form-control-sm" id="unite_mesure" value="{{ $produit->UniteMesure?->nom }}">
                     <label for="prix_achat" class="fw-semibold">Unité de Mesure</label>
                 </div>
             </div>

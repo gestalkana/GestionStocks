@@ -39,21 +39,35 @@ class CategorieController extends Controller
      */
     public function store(Request $request)
     {
-         $validated = $request->validate([
+    // Valide les données
+    $validated = $request->validate([
         'reference' => 'required|string',
         'nom' => 'required|string',
         'description' => 'nullable|string',
+    ]);
+
+    // Vérifie d'abord si la catégorie existe déjà (sur la référence)
+    if (Categorie::where('reference', $validated['reference'])->exists()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Cette catégorie existe déjà.'
+        ], 200);
+    }
+
+    // Si pas existante, on crée
+    $categorie = Categorie::create($validated);
+
+    // Retour JSON uniquement si requête AJAX
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'category' => $categorie->loadCount('produits')
         ]);
+    }
 
-        $categorie = Categorie::create($validated);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'category' => $categorie->loadCount('produits')
-            ]);
-        }
-
-        return redirect()->route('produits.index');
+    // Sinon redirection classique (si nécessaire)
+    return redirect()->route('categories.index')
+                     ->with('success', 'Catégorie créée avec succès.');
     }
 
     /**

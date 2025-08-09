@@ -47,6 +47,8 @@
   <!-- AJAX  et jquery-->
   <!-- Force clean modal -->
   <script src="{{ asset('js/modalUtils.js') }}"></script>
+  <!-- Tableau de bord -->
+  <script src="{{ asset('js/tableauDebord/graphique.js') }}"></script>
   <!-- Produit -->
   <script src="{{ asset('js/produits/PaginationProduit.js') }}"></script>
   <script src="{{ asset('js/produits/CaseAcocherProduit.js') }}"></script>
@@ -64,6 +66,11 @@
   <!-- Stocks Entrees -->
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/EntreeEdition.js') }}"></script>
-  <!-- <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script> -->
+  <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script>
+  <!-- Stocks Sorties -->
+  <script src="{{ asset('js/stocksSorties/AjoutProduitBS.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/BScreation.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/ChoixUnite.js') }}"></script>
+
 </body>
 </html>

@@ -6,6 +6,7 @@ use App\Models\StocksEntrees;
 use App\Models\Produit;
 use App\Models\Fournisseur;
 use App\Models\StocksSorties;
+use App\Models\Entrepot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -17,8 +18,8 @@ class StocksEntreesController extends Controller
     public function index()
     {
         // Récupération des entrées avec les relations
-        $stocksEntrees = StocksEntrees::with(['produit', 'fournisseur', 'user'])->orderBy('date_entree')->get();
-
+        $stocksEntrees = StocksEntrees::with(['produit', 'fournisseur', 'user', 'entrepot'])->orderBy('date_entree')->get();
+        $magasins = Entrepot::all();
         // Récupération des sorties groupées par produit et date
         $stocksSortiesGrouped = StocksSorties::selectRaw('produit_id, date_sortie, SUM(COALESCE(quantite, 0)) as total_sortie')
             ->groupBy('produit_id', 'date_sortie')
@@ -70,7 +71,8 @@ class StocksEntreesController extends Controller
         return view('stocksEntrees.index', [
             'stocksEntrees' => $stocksEntreesFormatted,
             'produits' => $produits,
-            'fournisseurs' => $fournisseurs
+            'fournisseurs' => $fournisseurs,
+            'magasins' => $magasins,
         ]);
     }
 
@@ -149,7 +151,7 @@ class StocksEntreesController extends Controller
         //$stocksEntrees = StocksEntrees::latest()->get();
         $stocksEntrees = StocksEntrees::with(['produit', 'user'])->latest()->get();
 
-        return view('stocksEntrees.listeStocksEntree', compact('stocksEntrees'));
+        return view('stocksEntrees.listeStocksEntrees', compact('stocksEntrees'));
     }
 
     /**

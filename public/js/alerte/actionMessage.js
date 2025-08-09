@@ -46,3 +46,12 @@ function showSuccessAlert(action, element) {
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// ✅ SweetAlert - Message d'erreur générique ou serveur
+  function showErrorAlert(title = 'Erreur', message = 'Une erreur est survenue.') {
+    Swal.fire({
+      icon: 'error',
+      title: title,
+      text: message
+    });
+  }

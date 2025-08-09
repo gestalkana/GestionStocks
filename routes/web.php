@@ -8,6 +8,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StocksEntreesController;
 use App\Http\Controllers\StocksSortiesController;
 use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\UniteMesureController;
+use App\Http\Controllers\EntrepotController;
 
 
 
@@ -20,7 +22,12 @@ Route::resource('produits', ProduitController::class
 Route::resource('categories', CategorieController::class
 )->middleware(['auth', 'verified']);
 
-Route::get('/produits/categories/reload', [CategorieController::class, 'reloadCategoriesFragment'])->name('categories.reload');
+Route::get('/produits/categories/reload', [CategorieController::class, 'reloadCategoriesFragment'])->name('categories.reload');Route::post('/unite_mesures', [UniteMesureController::class, 'store'])->name('unite_mesures.store');
+
+//Route::resource('unite_mesures', [UniteMesureController::class, 'store'])->name('unite_mesures.store');
+Route::resource('unite_mesures', UniteMesureController::class);
+
+Route::resource('entrepots', EntrepotController::class);
 
 Route::resource('fournisseurs', FournisseurController::class
 )->middleware(['auth', 'verified']);
@@ -34,6 +41,11 @@ Route::get('/stocksEntrees/reload', [StocksEntreesController::class,
 Route::resource('stocksSorties', StocksSortiesController::class
 )->middleware(['auth', 'verified']);
 
+Route::post('/stocks-sorties/ajax-store', [StocksSortiesController::class, 'ajaxStore'])->name('stocksSorties.ajaxStore');
+
+Route::get('/produits/{id}/stock-disponible', [StocksSortiesController::class, 'getStockDisponible']);
+
+Route::get('/api/lots-disponibles/{produit}', [StocksSortiesController::class, 'lotsDisponibles']);
 
 
 Route::middleware('auth')->group(function () {

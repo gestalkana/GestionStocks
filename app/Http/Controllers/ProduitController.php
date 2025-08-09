@@ -60,9 +60,10 @@ class ProduitController extends Controller
             'nom' => 'required|string|max:255',
             'code_produit' => 'required|string|unique:produits,code_produit',
             'description' => 'nullable|string',
-            'prix_unitaire' => 'required|numeric|min:0',
+            'prix_unitaire' => 'nullable|numeric|min:0',
             'prix_achat' => 'nullable|numeric|min:0',
             'date_expiration' => 'nullable|date',
+            'unite_mesure_id' => 'nullable|exists:unite_mesures,id',
             'categorie_id' => 'nullable|exists:categories,id',
         ]);
 
@@ -98,6 +99,7 @@ class ProduitController extends Controller
     public function show($id)
     {
         $produit = Produit::with(['categorie', 'stocksEntrees.fournisseur','UniteMesure'])->findOrFail($id);
+        $uniteMesure = UniteMesure::all();
         // Si l'unité de mesure n'existe pas, on crée un objet vide avec un nom par défaut
         if (!$produit->UniteMesure) {
             $produit->UniteMesure = (object) ['nom' => 'Non défini'];
@@ -123,7 +125,7 @@ class ProduitController extends Controller
             return $entree->quantite_restante > 0;
         });
 
-        return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles'));
+        return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles', 'uniteMesure'));
     }
 
 
@@ -150,6 +152,7 @@ class ProduitController extends Controller
             'code_produit' => 'required|string|max:100',
             'prix_achat' => 'nullable|numeric',
             'prix_unitaire' => 'required|numeric',
+            'unite_mesure_id' => 'nullable|exists:unite_mesures,id',
             'description' => 'nullable|string',
         ]);
 
@@ -158,6 +161,7 @@ class ProduitController extends Controller
         $produit->code_produit = $validated['code_produit'];
         $produit->prix_achat = $validated['prix_achat'];
         $produit->prix_unitaire = $validated['prix_unitaire'];
+        $produit->unite_mesure_id = $validated['unite_mesure_id'];
         $produit->description = $validated['description'] ?? '';
 
         $produit->save();
@@ -165,7 +169,7 @@ class ProduitController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Produit mis à jour avec succès.',
-            'produit' => $produit
+            'produit' => $produit->load('uniteMesure') // charge la relation
         ]);
     }
 

@@ -30,5 +30,9 @@ class StocksEntrees extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function entrepot()
+    { 
+        return $this->belongsTo(Entrepot::class);
+    }
 
 }
