@@ -9,6 +9,7 @@
             <th>Date d'expiration</th>
             <th>Stock Avant</th>
             <th>Stock Après</th>
+            <th>magasin</th>
             <th>Utilisateur</th>
             <th class="text-center">Actions</th>
         </tr>
@@ -26,6 +27,7 @@
                 </td>
                 <td>{{ $entree->stock_avant }}</td>
                 <td>{{ $entree->stock_apres }}</td>
+                   <td>{{ $entree->entrepot->nom ?? 'Non défini' }}</td>
                 <td>{{ $entree->user->name }}</td>
                 <td class="text-end">
                     <a href="{{ route('stocksEntrees.show', $entree->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">

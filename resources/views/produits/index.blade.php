@@ -47,8 +47,9 @@
         {{-- 1. Liste des produits --}}
         <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
             <div id="produits-container">
-            {{-- → resources/views/produits/listeProduits.blade.php --}}
-            @include('produits.listeProduits', ['produits' => $produits])  
+                    
+                {{-- → resources/views/produits/listeProduits.blade.php --}}
+                @include('produits.listeProduits', ['produits' => $produits])  
             </div>
         </div>
         {{-- 2. Ajouter un produit --}}

@@ -7,7 +7,7 @@
             </h6>
 
             <!-- <form id="form-sortie" action="{{-- route('stocksSorties.store') --}}" method="POST"> -->
-            <form id="form-sortie">
+            <form id="form-sortie" data-module="form-sortie">
 
                 @csrf
                 <div class="row g-2 mb-3">
@@ -34,64 +34,11 @@
 
                 <div class="mt-3">
                     <h6><i class="bi bi-cart-check me-2"></i> Produits à sortir</h6>
-                    <table class="table table-bordered table-sm align-middle mt-2">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width: 35%">Produit</th>
-                                <th style="width: 15%">Quantité demandée</th>
-                                <th style="width: 15%">UnitéMesure</th>
-                                <th style="width: 30%">Lots attribués</th>
-                                <th style="width: 5%" class="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="produits-sortie-body">
-                            <tr>
-                                <td>
-                                    <select name="produits[0][produit_id]" class="form-select form-select-sm produit-select" data-index="0" required>
-                                        <option value="">-- Choisir produit --</option>
-                                        @foreach ($produits as $produit)
-                                            <option 
-                                                value="{{ $produit->id }}" 
-                                                data-unite="{{ $produit->uniteMesure->nom ?? 'Non défini' }}">
-                                                {{ $produit->nom }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="number" name="produits[0][quantite]" class="form-control form-control-sm quantite-input" data-index="0" min="1" required>
-                                </td>
-                                <td>
-                                   <input type="text" class="form-control form-control-sm unite-input" data-index="0" readonly>
-                                </td>
-                                <td class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm attribuer-lots" data-index="0">
-                                        <i class="bi bi-tools"></i> Choisir lots
-                                    </button>
-                                    <div class="ms-2 mt-1 small text-primary lots-affiches" data-index="0">Aucun lot attribué</div>
-                                    <div class="lots-hidden" data-index="0"></div>
-                                </td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-outline-danger btn-sm remove-row">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @include('stocksSorties.tableSortie')
                     <button type="button" id="add-row" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-plus-circle"></i> Ajouter produit
                     </button>
                 </div>
-
-               <!--  <div class="text-end mt-3">
-                    <button type="submit" class="btn btn-success btn-sm">
-                        <i class="bi bi-save me-1"></i> Enregistrer
-                    </button>
-                    <button type="submit" name="validate" value="1" class="btn btn-dark btn-sm">
-                        <i class="bi bi-check2-circle"></i> Valider sortie
-                    </button>
-                </div> -->
                 <div class="text-end mt-4">
                     <button type="button" id="btn-enregistrer" class="btn btn-success me-2">
                         <i class="bi bi-save"></i> Enregistrer

@@ -9,6 +9,7 @@ use App\Models\StocksSorties;
 use App\Models\Entrepot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class StocksEntreesController extends Controller
 {
@@ -19,7 +20,7 @@ class StocksEntreesController extends Controller
     {
         // Récupération des entrées avec les relations
         $stocksEntrees = StocksEntrees::with(['produit', 'fournisseur', 'user', 'entrepot'])->orderBy('date_entree')->get();
-        $magasins = Entrepot::all();
+        $entrepots = Entrepot::all();
         // Récupération des sorties groupées par produit et date
         $stocksSortiesGrouped = StocksSorties::selectRaw('produit_id, date_sortie, SUM(COALESCE(quantite, 0)) as total_sortie')
             ->groupBy('produit_id', 'date_sortie')
@@ -72,7 +73,7 @@ class StocksEntreesController extends Controller
             'stocksEntrees' => $stocksEntreesFormatted,
             'produits' => $produits,
             'fournisseurs' => $fournisseurs,
-            'magasins' => $magasins,
+            'entrepots' => $entrepots,
         ]);
     }
 
@@ -87,54 +88,77 @@ class StocksEntreesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'produit_id' => 'required|exists:produits,id',
-            'quantite' => 'required|numeric|min:1',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-            'date_expiration' => 'nullable|date',
-        ]);
-        // Ajouter la date d'entrée actuelle
-        $validated['date_entree'] = Carbon::now();
-        $entree = new StocksEntrees($validated);
-        $entree->user_id = auth()->id();
-        $entree->save();
+     
 
-        // Calculer stock_avant et stock_apres
-        $totalEntree = StocksEntrees::where('produit_id', $entree->produit_id)
-            ->whereDate('date_entree', '<=', $entree->date_entree)
-            ->where('id', '<=', $entree->id)
-            ->sum('quantite');
-
-        $totalSortie = StocksSorties::where('produit_id', $entree->produit_id)
-            ->whereDate('date_sortie', '<=', $entree->date_entree)
-            ->sum('quantite');
-
-        $stockApres = $totalEntree - $totalSortie;
-        $stockAvant = $stockApres - floatval($entree->quantite);
-
-        $entree->stock_avant = $stockAvant;
-        $entree->stock_apres = $stockApres;
-
-        // Charger relations pour JS
-        $entree->load(['produit', 'user']);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'entree' => $entree
+        public function store(Request $request)
+        {
+            $validated = $request->validate([
+                'produit_id' => 'required|exists:produits,id',
+                'quantite' => 'required|numeric|min:1',
+                'fournisseur_id' => 'nullable|exists:fournisseurs,id',
+                'entrepot_id' => 'required|exists:entrepots,id',
+                'date_expiration' => 'nullable|date',
             ]);
+
+            // Vérifier si le produit existe déjà dans un autre entrepôt
+            $existeAutreMagasin = StocksEntrees::where('produit_id', $validated['produit_id'])
+                ->where('entrepot_id', '!=', $validated['entrepot_id'])
+                ->exists();
+
+            if ($existeAutreMagasin) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'error' => true,
+                        'type' => 'produit_autre_magasin',
+                        'message' => 'Ce produit est déjà enregistré dans un autre magasin.'
+                    ], 409); // 409 = Conflict
+                }
+                return redirect()->back()->withErrors(['produit_id' => 'Ce produit est déjà enregistré dans un autre magasin.']);
+            }
+
+            // Ajouter la date d'entrée actuelle
+            $validated['date_entree'] = now();
+            //Ajout de numéro de lot 
+            $validated['numero_lot'] = $this->generateNumeroLot($validated['entrepot_id']);
+
+            $entree = new StocksEntrees($validated);
+            $entree->user_id = auth()->id();
+            $entree->save();
+
+            // Calculer stock_avant et stock_apres
+            $totalEntree = StocksEntrees::where('produit_id', $entree->produit_id)
+                ->where('entrepot_id', $entree->entrepot_id)
+                ->whereDate('date_entree', '<=', $entree->date_entree)
+                ->where('id', '<=', $entree->id)
+                ->sum('quantite');
+
+            $totalSortie = StocksSorties::where('produit_id', $entree->produit_id)
+                ->where('entrepot_id', $entree->entrepot_id)
+                ->whereDate('date_sortie', '<=', $entree->date_entree)
+                ->sum('quantite');
+
+            $stockApres = $totalEntree - $totalSortie;
+            $stockAvant = $stockApres - floatval($entree->quantite);
+
+            $entree->stock_avant = $stockAvant;
+            $entree->stock_apres = $stockApres;
+
+            $entree->load(['produit', 'user', 'entrepot']);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'entree' => $entree
+                ]);
+            }
+
+            return redirect()->route('stocksEntrees.index')->with('success', 'Entrée enregistrée.');
         }
-
-        return redirect()->route('stocksEntrees.index')->with('success', 'Entrée enregistrée.');
-    }
-
 
     /**
      * Display the specified resource.
      */
     public function show(StocksEntrees $stocksEntrees)
-    {
+    {     
         //
     }
 
@@ -206,4 +230,23 @@ class StocksEntreesController extends Controller
     {
         //
     }
+
+    private function generateNumeroLot($entrepotId)
+    {
+    // Mois et année actuels
+    $moisAnnee = now()->format('my'); // MMYY
+
+    // Compter combien de lots déjà créés ce mois-ci pour cet entrepôt
+    $countThisMonth = StocksEntrees::where('entrepot_id', $entrepotId)
+        ->whereMonth('date_entree', now()->month)
+        ->whereYear('date_entree', now()->year)
+        ->count() + 1;
+
+    // Formater N en 3 chiffres
+    $sequence = str_pad($countThisMonth, 3, '0', STR_PAD_LEFT);
+
+    // Retourner le numéro de lot
+    return 'LOT-M' . str_pad($entrepotId, 2, '0', STR_PAD_LEFT) . '-' . $moisAnnee . '-' . $sequence;
+    }
+
 }

@@ -13,6 +13,7 @@
   <!-- Tippy.js core -->
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
   <link rel="stylesheet" type="text/css" href="{{ asset('css/Mycss.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/impression.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
@@ -31,7 +32,8 @@
     </div>
   </div>
   <!-- Bootstrap.js -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <!-- chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- SweetAlert2.js -->
@@ -56,6 +58,7 @@
   <script src="{{ asset('js/produits/ProduitEdition.js') }}"></script>
   <script src="{{ asset('js/produits/ProduitSuppression.js') }}"></script>
   <script src="{{ asset('js/produits/UniteMesure.js') }}"></script>
+  <script src="{{ asset('js/produits/RechercheEtFiltrage.js') }}"></script>
   <!-- Categorie -->
   <script src="{{ asset('js/categories/CategorieCreation.js') }}"></script>
   <script src="{{ asset('js/categories/CategorieEdition.js') }}"></script>
@@ -71,6 +74,7 @@
   <script src="{{ asset('js/stocksSorties/AjoutProduitBS.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/BScreation.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/ChoixUnite.js') }}"></script>
-
+  <!-- other -->
+  <script src="{{ asset('js/impression.js') }}"></script>
 </body>
 </html>

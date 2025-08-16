@@ -94,7 +94,10 @@ class StocksSortiesController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+{
+    // -------------------------------
+    // Validation des données
+    // -------------------------------
     $request->validate([
         'date_sortie' => 'required|date',
         'client' => 'nullable|string',
@@ -104,74 +107,165 @@ class StocksSortiesController extends Controller
         'produits.*.lots' => 'nullable|array',
     ]);
 
+    // -------------------------------
     // Génération du numéro de bon
+    // -------------------------------
     $numeroBon = $this->genererNumeroBon();
-    //$numeroBon = 'BS-' . str_pad(StocksSorties::max('id') + 1, 4, '0', STR_PAD_LEFT);
 
+    // -------------------------------
+    // Parcours des produits
+    // -------------------------------
     foreach ($request->produits as $produitData) {
-        $sortie = StocksSorties::create([
-            'produit_id'     => $produitData['produit_id'],
-            'stock_entree_id'=> null, // défini par lot si nécessaire
-            'quantite'       => $produitData['quantite'],
-            'date_sortie'    => $request->date_sortie,
-            'motif'          => $request->client,
-            'user_id'        => auth()->id(),
-            'statut'         => $request->action === 'valider' ? 'valide' : 'brouillon',
-            'numero_bon'     => $numeroBon,
-        ]);
+        $lots = $produitData['lots'] ?? [];
+        $quantiteDemandee = $produitData['quantite'];
+        $totalLots = 0;
 
-        // Si des lots sont définis
-        if ($request->action === 'valider' && isset($produitData['lots'])) {
-            foreach ($produitData['lots'] as $lot) {
-                [$lotId, $qte] = explode(':', $lot);
+        // -------------------------------
+        // Vérification des lots
+        // -------------------------------
+        foreach ($lots as $lot) {
+            [$lotId, $qte] = explode(':', $lot);
+            $qte = (int) $qte;
 
-                // Création d'une ligne de sortie liée à un lot précis
-                $sortieLot = $sortie->replicate(); // on copie les infos
-                $sortieLot->stock_entree_id = $lotId;
-                $sortieLot->quantite = $qte;
-                $sortieLot->save();
-
-                // Mise à jour du stock restant dans le lot
-                $stock = StocksEntrees::find($lotId);
-                if ($stock) {
-                    $stock->quantite -= $qte;
-                    if ($stock->quantite < 0) {
-                        return back()->with('error', "Le stock du lot {$lotId} est insuffisant.");
-                    }
-                    $stock->save();
-                }
+            $stock = StocksEntrees::find($lotId);
+            if (!$stock) {
+                return back()->with('error', "Le lot {$lotId} n'existe pas.");
+            }
+            if ($stock->quantite < $qte) {
+                return back()->with('error', "Le stock du lot {$lotId} est insuffisant. Disponible : {$stock->quantite}, demandé : {$qte}.");
             }
 
-            // Supprime la sortie vide de base
-            $sortie->delete();
+            $totalLots += $qte;
+        }
+
+        if ($totalLots > $quantiteDemandee) {
+            return back()->with('error', "La somme des lots ({$totalLots}) dépasse la quantité demandée ({$quantiteDemandee}).");
+        }
+
+        // -------------------------------
+        // Création des sorties pour chaque lot
+        // -------------------------------
+        foreach ($lots as $lot) {
+            [$lotId, $qte] = explode(':', $lot);
+
+            StocksSorties::create([
+                'produit_id'     => $produitData['produit_id'],
+                'stock_entree_id'=> $lotId,
+                'quantite'       => $qte,
+                'date_sortie'    => $request->date_sortie,
+                'motif'          => $request->client,
+                'user_id'        => auth()->id(),
+                'statut'         => $request->action === 'validé' ? 'valide' : 'brouillon',
+                'numero_bon'     => $numeroBon,
+            ]);
+
+            // Mise à jour du stock restant
+            $stock = StocksEntrees::find($lotId);
+            $stock->quantite -= $qte;
+            $stock->save();
+        }
+
+        // -------------------------------
+        // Si aucun lot défini, sortie normale
+        // -------------------------------
+        if (empty($lots)) {
+            StocksSorties::create([
+                'produit_id'     => $produitData['produit_id'],
+                'stock_entree_id'=> null,
+                'quantite'       => $quantiteDemandee,
+                'date_sortie'    => $request->date_sortie,
+                'motif'          => $request->client,
+                'user_id'        => auth()->id(),
+                'statut'         => $request->action === 'valider' ? 'valide' : 'brouillon',
+                'numero_bon'     => $numeroBon,
+            ]);
         }
     }
 
+    // -------------------------------
+    // Redirection avec message
+    // -------------------------------
     return redirect()->route('stocksSorties.index')
         ->with('success', $request->action === 'valider' 
             ? 'Sortie validée et stock mis à jour.' 
             : 'Sortie enregistrée en brouillon.');
-    }
-    //Enregistrement via ajax
-    public function ajaxStore(Request $request)
-    {
-    $statut = $request->statut ?? 'brouillon';
+}
+
+public function ajaxStore(Request $request)
+{
+    // -------------------------------
+    // Récupération du statut et numéro de bon
+    // -------------------------------
+    $statut = strtolower($request->statut ?? 'brouillon'); // converti en minuscule pour uniformité
     $numeroBon = $this->genererNumeroBon();
 
-    if (!$request->has('produits')) {
+    // -------------------------------
+    // Vérification de la présence de produits
+    // -------------------------------
+    if (!$request->has('produits') || empty($request->produits)) {
         return response()->json([
             'success' => false,
             'message' => 'Aucun produit sélectionné.'
-        ]);
+        ], 422);
     }
 
     foreach ($request->produits as $produitData) {
-        $produitId = $produitData['produit_id'];
-        $quantiteDemandee = $produitData['quantite'];
+        $produitId = $produitData['produit_id'] ?? null;
+        $quantiteDemandee = (int) ($produitData['quantite'] ?? 0);
+        $lots = $produitData['lots'] ?? [];
 
-        if ($statut === 'valide' && isset($produitData['lots'])) {
-            foreach ($produitData['lots'] as $lot) {
+        // -------------------------------
+        // Validation produit et quantité
+        // -------------------------------
+        if (!$produitId || $quantiteDemandee <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "Produit ou quantité invalide."
+            ], 422);
+        }
+
+        // -------------------------------
+        // Gestion des lots si statut valide
+        // -------------------------------
+        if ($statut === 'valide' && !empty($lots) && is_array($lots)) {
+            $totalLots = 0;
+
+            foreach ($lots as $lot) {
                 [$lotId, $qte] = explode(':', $lot);
+                $qte = (int) $qte;
+
+                $stock = StocksEntrees::find($lotId);
+                if (!$stock) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Le lot #{$lotId} n'existe pas."
+                    ], 422);
+                }
+
+                if ($stock->quantite < $qte) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Stock insuffisant pour le lot #{$lotId} (disponible: {$stock->quantite}, demandé: {$qte})."
+                    ], 422);
+                }
+
+                $totalLots += $qte;
+            }
+
+            if ($totalLots > $quantiteDemandee) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "La somme des lots ({$totalLots}) dépasse la quantité demandée ({$quantiteDemandee})."
+                ], 422);
+            }
+
+            // -------------------------------
+            // Création des sorties et mise à jour des stocks
+            // -------------------------------
+            foreach ($lots as $lot) {
+                [$lotId, $qte] = explode(':', $lot);
+                $qte = (int) $qte;
+
                 StocksSorties::create([
                     'produit_id' => $produitId,
                     'stock_entree_id' => $lotId,
@@ -183,8 +277,16 @@ class StocksSortiesController extends Controller
                     'numero_bon' => $numeroBon,
                     'statut' => 'valide'
                 ]);
+
+                $stock = StocksEntrees::find($lotId);
+                $stock->quantite -= $qte;
+                $stock->save();
             }
+
         } else {
+            // -------------------------------
+            // Cas brouillon ou sans lots
+            // -------------------------------
             StocksSorties::create([
                 'produit_id' => $produitId,
                 'stock_entree_id' => null,
@@ -197,13 +299,15 @@ class StocksSortiesController extends Controller
                 'statut' => 'brouillon'
             ]);
         }
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Bon de sortie enregistré avec succès.'
-        ]);
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => $statut === 'valide'
+            ? 'Sortie validée et stock mis à jour.'
+            : 'Sortie enregistrée en brouillon.'
+    ]);
+}
 
 
     /**
@@ -262,29 +366,33 @@ class StocksSortiesController extends Controller
     return response()->json(['stock_disponible' => $stockDisponible]);
     }
 
-    public function lotsDisponibles($produitId)
+   public function lotsDisponibles($produitId)
     {
-        $lots = StocksEntrees::with('produit')
-            ->where('produit_id', $produitId)
-            ->get()
-            ->filter(function ($lot) {
-                $sortie = StocksSorties::where('stock_entree_id', $lot->id)->sum('quantite');
-                return ($lot->quantite - $sortie) > 0;
-            })
-            ->map(function ($lot) {
-                $sortie = StocksSorties::where('stock_entree_id', $lot->id)->sum('quantite');
-                return [
-                    'id' => $lot->id,
-                    'produit' => $lot->produit->nom,
-                    'date_entree' => $lot->date_entree,
-                    'date_expiration' => $lot->date_expiration,
-                    'reste' => $lot->quantite - $sortie,
-                ];
-            })
-            ->values();
+    $lots = StocksEntrees::with('produit')
+        ->where('produit_id', $produitId)
+        ->get()
+        ->filter(function ($lot) {
+            // Calculer la quantité déjà sortie pour ce lot
+            $quantiteSortie = StocksSorties::where('stock_entree_id', $lot->id)->sum('quantite');
+            // Ne garder que les lots où il reste au moins 1 unité
+            return ($lot->quantite - $quantiteSortie) > 0;
+        })
+        ->map(function ($lot) {
+            $quantiteSortie = StocksSorties::where('stock_entree_id', $lot->id)->sum('quantite');
+            return [
+                'id' => $lot->id,
+                'produit' => $lot->produit->nom,
+                'numero_lot' => $lot->numero_lot, // <- colonne réelle dans ta table
+                'date_entree' => $lot->date_entree,
+                'date_expiration' => $lot->date_expiration,
+                'reste' => $lot->quantite - $quantiteSortie,
+            ];
+        })
+        ->values();
 
-        return response()->json($lots);
+    return response()->json($lots);
     }
+
 
     private function genererNumeroBon()
     {

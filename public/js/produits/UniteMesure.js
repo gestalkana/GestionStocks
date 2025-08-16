@@ -1,5 +1,4 @@
 (() => {
-  // Tester que le DOM est prêt (optionnel si script placé en fin de page)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -7,12 +6,11 @@
   }
 
   function init() {
-    const form = document.getElementById('formAjouterUnite');
+    const form = document.querySelector('[data-module="unite-form"]');
     const errorMsg = document.getElementById('modalErrorMsg');
 
-    // Tests d’existence des éléments nécessaires
     if (!form) {
-      console.warn('Formulaire "formAjouterUnite" non trouvé.');
+      console.info('[UniteFormModule] Formulaire non présent sur cette page. Script ignoré.');
       return;
     }
 
@@ -23,15 +21,11 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      // Toujours cacher l’erreur au départ
       errorMsg.style.display = 'none';
       errorMsg.textContent = '';
 
-      // Collecter les données
       const formData = new FormData(form);
 
-      // Validation basique côté client
       const code = formData.get('code');
       const nom = formData.get('nom');
       const symbole = formData.get('symbole');
@@ -54,7 +48,6 @@
         symbole: symbole ? symbole.trim() : null,
       };
 
-      // Récupérer token CSRF en testant l’existence
       const metaCsrf = document.querySelector('meta[name="csrf-token"]');
       if (!metaCsrf) {
         errorMsg.textContent = 'Token CSRF introuvable, impossible d\'envoyer le formulaire.';
@@ -79,15 +72,12 @@
           try {
             const errData = await response.json();
             errMsg = errData.message || errMsg;
-          } catch {
-            // ignore parsing error
-          }
+          } catch {}
           throw new Error(errMsg);
         }
 
         const result = await response.json();
 
-        // Fermer la modal en testant l’instance Bootstrap
         const modalEl = document.getElementById('modalAjouterUnite');
         if (modalEl) {
           const modal = bootstrap.Modal.getInstance(modalEl);
@@ -95,17 +85,14 @@
         }
 
         form.reset();
-        //alert(result.message || 'Unité de mesure enregistrée avec succès.');
-        showSuccessAlert('create', 'Unite de mesure');
+        showSuccessAlert('create', 'Unité de mesure');
 
-        // Ajouter la nouvelle unité au select
         const select = document.getElementById('unite_mesure_id');
         if (select) {
           const option = document.createElement('option');
-          option.value = result.unite.id; // Assure-toi que l'ID est bien retourné dans `result`
+          option.value = result.unite.id;
           option.textContent = `${result.unite.nom} (${result.unite.symbole || ''})`;
-          option.selected = true; // La nouvelle unité est sélectionnée
-
+          option.selected = true;
           select.appendChild(option);
         }
 

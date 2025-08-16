@@ -1,27 +1,20 @@
 (function () {
-    // -------------------------------
-    // Variables privées du module
-    // -------------------------------
     let currentIndex = 1;
     let selectedProduitId = null;
     let selectedQuantiteDemandee = null;
 
-    // -------------------------------
-    // Initialisation des écouteurs
-    // -------------------------------
     document.addEventListener('DOMContentLoaded', function () {
         const addRowBtn = document.getElementById('add-row');
         const confirmLotsBtn = document.getElementById('confirm-lots');
+        const form = document.getElementById('form-sortie');
 
         if (addRowBtn) addRowBtn.addEventListener('click', handleAddRow);
         if (confirmLotsBtn) confirmLotsBtn.addEventListener('click', handleConfirmLots);
+        if (form) form.addEventListener('submit', handleSubmit);
 
         document.addEventListener('click', handleDocumentClick);
     });
 
-    // -------------------------------
-    // Ajouter une ligne
-    // -------------------------------
     function handleAddRow() {
         const tbody = document.getElementById('produits-sortie-body');
         const selectBase = document.querySelector('select[name="produits[0][produit_id]"]');
@@ -58,9 +51,6 @@
         tbody.appendChild(row);
     }
 
-    // -------------------------------
-    // Gestion des clics globaux
-    // -------------------------------
     function handleDocumentClick(e) {
         if (e.target.closest('.remove-row')) {
             e.target.closest('tr').remove();
@@ -72,9 +62,6 @@
         }
     }
 
-    // -------------------------------
-    // Choisir les lots
-    // -------------------------------
     function handleChoisirLots(button) {
         const index = button.dataset.index;
         const row = button.closest('tr');
@@ -94,10 +81,8 @@
             return;
         }
 
-        // Mémoriser l'index
         document.getElementById('confirm-lots').dataset.current = index;
 
-        // Charger les lots via API
         fetch(`/api/lots-disponibles/${selectedProduitId}`)
             .then(res => {
                 if (!res.ok) throw new Error("Erreur de chargement des lots.");
@@ -113,9 +98,6 @@
             });
     }
 
-    // -------------------------------
-    // Affichage des lots dans la modale
-    // -------------------------------
     function afficherLotsDansModal(data) {
         const tbody = document.getElementById('lot-modal-body');
         tbody.innerHTML = '';
@@ -134,7 +116,7 @@
             tbody.innerHTML += `
                 <tr>
                     <td>${lot.produit}</td>
-                    <td>${lot.id}</td>
+                    <td>${lot.numero_lot}</td>
                     <td>${lot.date_entree}</td>
                     <td>${lot.date_expiration || 'non défini'}</td>
                     <td>${lot.reste}</td>
@@ -148,9 +130,6 @@
         new bootstrap.Modal(document.getElementById('lotModal')).show();
     }
 
-    // -------------------------------
-    // Confirmer les lots choisis
-    // -------------------------------
     function handleConfirmLots() {
         const index = this.dataset.current;
         const container = document.querySelector(`.lots-hidden[data-index="${index}"]`);
@@ -226,5 +205,50 @@
         }
 
         bootstrap.Modal.getInstance(document.getElementById('lotModal')).hide();
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(async response => {
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error("Réponse invalide du serveur");
+            }
+
+            if (!response.ok || data.success === false) {
+                throw new Error(data.message || "Erreur inconnue.");
+            }
+
+            return data;
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Succès',
+                text: data.message
+            }).then(() => {
+                window.location.href = "/sorties";
+            });
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: error.message
+            });
+        });
     }
 })();

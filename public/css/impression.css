@@ -1,0 +1,38 @@
+@media print {
+    body {
+        -webkit-print-color-adjust: exact; /* pour Chrome/Safari */
+        print-color-adjust: exact;         /* pour Firefox et autres navigateurs */
+    }
+
+    body * {
+        visibility: hidden; /* cache tout */
+    }
+
+    #zoneImpression,
+    #zoneImpression * {
+        visibility: visible; /* montre juste la zone à imprimer */
+    }
+
+    #zoneImpression {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: white;
+        color: black;
+    }
+
+    /* Supprimer les ombres, transitions ou éléments qui peuvent déranger à l'impression */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+        transition: none !important;
+    }
+
+    /* Facultatif : éviter les sauts de page intempestifs */
+    #zoneImpression {
+        page-break-inside: avoid;
+    }
+}

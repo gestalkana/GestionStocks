@@ -7,6 +7,7 @@ use App\Models\Categorie;
 use App\Models\StocksEntrees;
 use App\Models\StocksSorties;
 use App\Models\UniteMesure;
+use App\Models\Entrepot;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
@@ -16,28 +17,36 @@ class ProduitController extends Controller
      */
    public function index(Request $request)
     {
-        //$produits = Produit::with('categorie')->paginate(10);
-        $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->paginate(10);
+    // Récupère les produits avec les relations nécessaires
+    $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->get();
+    $entrepots = Entrepot::all();
 
-        // Calcul du stock pour chaque produit
-        foreach ($produits as $produit) {
-            $totalEntrees = $produit->stocksEntrees->sum('quantite');
-            $totalSorties = $produit->stocksSorties->sum('quantite');
-            $produit->stock = $totalEntrees - $totalSorties;
-        }
-        // Récupère toutes les catégories avec le nombre de produits associés
-        $categories = Categorie::withCount('produits')->latest()->get();
-
-       
-        // Récupère toutes les unités de mesure
-        $uniteMesure = UniteMesure::all();
-        
-        if ($request->ajax()) {
-            return view('produits.listeProduits', compact('produits'))->render();
-        }
-
-        return view('produits.index', compact('produits', 'categories', 'uniteMesure'));
+    // Calcul du stock pour chaque produit
+    foreach ($produits as $produit) {
+        $totalEntrees = $produit->stocksEntrees->sum('quantite');
+        $totalSorties = $produit->stocksSorties->sum('quantite');
+        $produit->stock = $totalEntrees - $totalSorties;
     }
+
+    // Récupère toutes les catégories avec le nombre de produits associés
+    $categories = Categorie::withCount('produits')->latest()->get();
+
+    // Récupère toutes les unités de mesure
+    $uniteMesure = UniteMesure::all();
+
+    // Couleurs pour les badges
+    $badgeColors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
+    $colorIndex = 0;
+
+    // Si la requête est AJAX (filtrage), renvoyer seulement le tableau
+    if ($request->ajax()) {
+        return view('produits.listeProduits', compact('produits', 'badgeColors', 'colorIndex'))->render();
+    }
+
+    // Vue complète pour l’affichage normal
+    return view('produits.index', compact('produits', 'categories', 'uniteMesure', 'entrepots', 'badgeColors', 'colorIndex'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -200,5 +209,4 @@ class ProduitController extends Controller
             return redirect()->route('produits.index')->with('error', 'Erreur lors de la suppression.');
         }
     }
-
 }

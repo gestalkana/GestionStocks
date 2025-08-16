@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let data = form.serialize();
 
             $.ajax({
-                url: "{{ route('magasins.store') }}",
+                url: "{{ route('entrepot.store') }}",
                 method: "POST",
                 data: data,
                 success: function (response) {
