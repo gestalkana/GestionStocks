@@ -16,8 +16,9 @@ class EntrepotFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
+          return [
+            'nom' => 'Entrepot ' . $this->faker->city(),
+            'emplacement' => $this->faker->address(),
         ];
     }
 }

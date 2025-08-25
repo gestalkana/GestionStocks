@@ -26,7 +26,7 @@
           </div>
         </td>
         <td>{{ $categorie->nom }}</td>
-        <td>{{ $categorie->description ?? '—' }}</td>
+        <td>{{ $categorie->description ? Str::limit($categorie->description, 50) : '—' }}</td>
         <td>
          <span class="badge 
          {{ $categorie->produits_count > 0 ? 'bg-info text-dark' : 'bg-danger text-white' }}">

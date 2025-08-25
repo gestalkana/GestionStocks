@@ -88,71 +88,75 @@ class StocksEntreesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-     
+         
+    public function store(Request $request)
+    {
+        // Validation avec contrainte sur date_entree (pas de date future)
+        $validated = $request->validate([
+            'produit_id' => 'required|exists:produits,id',
+            'quantite' => 'required|numeric|min:1',
+            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
+            'entrepot_id' => 'required|exists:entrepots,id',
+            'date_entree' => 'required|date|before_or_equal:today',
+            'date_expiration' => 'nullable|date',
+        ]);
 
-        public function store(Request $request)
-        {
-            $validated = $request->validate([
-                'produit_id' => 'required|exists:produits,id',
-                'quantite' => 'required|numeric|min:1',
-                'fournisseur_id' => 'nullable|exists:fournisseurs,id',
-                'entrepot_id' => 'required|exists:entrepots,id',
-                'date_expiration' => 'nullable|date',
-            ]);
+        // Vérifier si le produit existe déjà dans un autre entrepôt
+        $existeAutreMagasin = StocksEntrees::where('produit_id', $validated['produit_id'])
+            ->where('entrepot_id', '!=', $validated['entrepot_id'])
+            ->exists();
 
-            // Vérifier si le produit existe déjà dans un autre entrepôt
-            $existeAutreMagasin = StocksEntrees::where('produit_id', $validated['produit_id'])
-                ->where('entrepot_id', '!=', $validated['entrepot_id'])
-                ->exists();
-
-            if ($existeAutreMagasin) {
-                if ($request->ajax()) {
-                    return response()->json([
-                        'error' => true,
-                        'type' => 'produit_autre_magasin',
-                        'message' => 'Ce produit est déjà enregistré dans un autre magasin.'
-                    ], 409); // 409 = Conflict
-                }
-                return redirect()->back()->withErrors(['produit_id' => 'Ce produit est déjà enregistré dans un autre magasin.']);
-            }
-
-            // Ajouter la date d'entrée actuelle
-            $validated['date_entree'] = now();
-            //Ajout de numéro de lot 
-            $validated['numero_lot'] = $this->generateNumeroLot($validated['entrepot_id']);
-
-            $entree = new StocksEntrees($validated);
-            $entree->user_id = auth()->id();
-            $entree->save();
-
-            // Calculer stock_avant et stock_apres
-            $totalEntree = StocksEntrees::where('produit_id', $entree->produit_id)
-                ->where('entrepot_id', $entree->entrepot_id)
-                ->whereDate('date_entree', '<=', $entree->date_entree)
-                ->where('id', '<=', $entree->id)
-                ->sum('quantite');
-
-            $totalSortie = StocksSorties::where('produit_id', $entree->produit_id)
-                ->where('entrepot_id', $entree->entrepot_id)
-                ->whereDate('date_sortie', '<=', $entree->date_entree)
-                ->sum('quantite');
-
-            $stockApres = $totalEntree - $totalSortie;
-            $stockAvant = $stockApres - floatval($entree->quantite);
-
-            $entree->stock_avant = $stockAvant;
-            $entree->stock_apres = $stockApres;
-
-            $entree->load(['produit', 'user', 'entrepot']);
-
+        if ($existeAutreMagasin) {
             if ($request->ajax()) {
                 return response()->json([
-                    'entree' => $entree
-                ]);
+                    'error' => true,
+                    'type' => 'produit_autre_magasin',
+                    'message' => 'Ce produit est déjà enregistré dans un autre magasin.'
+                ], 409); // 409 = Conflict
             }
-
-            return redirect()->route('stocksEntrees.index')->with('success', 'Entrée enregistrée.');
+            return redirect()->back()->withErrors(['produit_id' => 'Ce produit est déjà enregistré dans un autre magasin.']);
         }
+
+        // Génération du numéro de lot
+        $validated['numero_lot'] = $this->generateNumeroLot($validated['entrepot_id']);
+
+        // Création de l'entrée stock
+        $entree = new StocksEntrees($validated);
+        $entree->user_id = auth()->id();
+        $entree->save();
+
+        // Calcul du stock total entré jusqu'à la date d'entrée du lot (inclus)
+        $totalEntree = StocksEntrees::where('produit_id', $entree->produit_id)
+            ->where('entrepot_id', $entree->entrepot_id)
+            ->whereDate('date_entree', '<=', $entree->date_entree)
+            ->sum('quantite') ?? 0;
+
+        // Calcul du stock total sorti jusqu'à la date d'entrée du lot (inclus)
+        $totalSortie = StocksSorties::where('produit_id', $entree->produit_id)
+            ->where('entrepot_id', $entree->entrepot_id)
+            ->whereDate('date_sortie', '<=', $entree->date_entree)
+            ->sum('quantite') ?? 0;
+
+        // Calcul stock après et avant cette entrée
+        $stockApres = $totalEntree - $totalSortie;
+        $stockAvant = $stockApres - (float) $entree->quantite;
+
+        // $entree->stock_avant = $stockAvant;
+        // $entree->stock_apres = $stockApres;
+        $entree->save();
+
+        // Chargement des relations utiles pour la réponse
+        $entree->load(['produit', 'user', 'entrepot']);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'entree' => $entree
+            ]);
+        }
+
+        return redirect()->route('stocksEntrees.index')->with('success', 'Entrée enregistrée.');
+    }
+
 
     /**
      * Display the specified resource.

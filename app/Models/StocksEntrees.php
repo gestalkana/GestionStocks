@@ -22,6 +22,11 @@ class StocksEntrees extends Model
     {
         return $this->belongsTo(Produit::class);
     }
+    public function stocksSorties()
+{
+    return $this->hasMany(StocksSorties::class, 'stock_entree_id');
+}
+
 
     public function fournisseur()
     {

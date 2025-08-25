@@ -14,7 +14,7 @@
                     @csrf
                     <div class="row g-3">
                         <!-- Sélection du magasin (entrepôt) -->
-                        <div class="col-md-12">
+                        <div class="col-md-8">
                             <label class="form-label">Magasin</label>
                             <select name="entrepot_id" class="form-select" required>
                                 <option value="">-- Sélectionner un magasin --</option>
@@ -23,7 +23,11 @@
                                 @endforeach
                             </select>
                         </div>
-
+                        <!-- Date d'entrée -->
+                        <div class="col-md-4">
+                            <label class="form-label">Date d'Entrée</label>
+                            <input type="date" name="date_entree" class="form-control" value="{{ date('Y-m-d') }}" required>
+                        </div>
                         <!-- Produit -->
                         <div class="col-md-3">
                             <label class="form-label">Produit</label>

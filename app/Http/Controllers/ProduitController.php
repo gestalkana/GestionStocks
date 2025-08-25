@@ -105,37 +105,58 @@ class ProduitController extends Controller
 
     return view('produits.show', compact('produit', 'quantiteTotaleStock'));
     }*/
-    public function show($id)
-    {
-        $produit = Produit::with(['categorie', 'stocksEntrees.fournisseur','UniteMesure'])->findOrFail($id);
-        $uniteMesure = UniteMesure::all();
-        // Si l'unité de mesure n'existe pas, on crée un objet vide avec un nom par défaut
-        if (!$produit->UniteMesure) {
-            $produit->UniteMesure = (object) ['nom' => 'Non défini'];
-        }
+   public function show($id)
+{
+    $produit = Produit::with(['categorie', 'stocksEntrees.fournisseur', 'stocksEntrees.stocksSorties', 'UniteMesure'])->findOrFail($id);
+    $uniteMesure = UniteMesure::all();
 
-        // Quantité totale entrée
-        $totalEntree = $produit->stocksEntrees->sum('quantite');
-
-        // Quantité totale sortie
-        $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
-
-        // Quantité totale en stock
-        $quantiteTotaleStock = max($totalEntree - $totalSortie, 0);
-
-        // Calculer quantité restante par entrée (proportionnelle)
-        $lotsDisponibles = $produit->stocksEntrees->map(function($entree) use ($totalEntree, $totalSortie) {
-            $proportion = $entree->quantite / $totalEntree;
-            $quantiteSortieAssociee = $totalSortie * $proportion;
-            $quantiteRestante = max($entree->quantite - $quantiteSortieAssociee, 0);
-            $entree->quantite_restante = $quantiteRestante;
-            return $entree;
-        })->filter(function($entree) {
-            return $entree->quantite_restante > 0;
-        });
-
-        return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles', 'uniteMesure'));
+    // Si l'unité de mesure n'existe pas
+    if (!$produit->UniteMesure) {
+        $produit->UniteMesure = (object) ['nom' => 'Non défini'];
     }
+
+    // Quantité totale entrée
+    $totalEntree = $produit->stocksEntrees->sum('quantite');
+
+    // Quantité totale sortie (toutes sorties confondues pour ce produit)
+    $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
+
+    // Quantité totale en stock
+    $quantiteTotaleStock = max($totalEntree - $totalSortie, 0);
+
+    // Calcul des lots disponibles (quantité restante par entrée)
+    // $lotsDisponibles = $produit->stocksEntrees->map(function ($entree) {
+    // $quantiteSortie = $entree->stocksSorties->sum('quantite');
+    // $quantiteRestante = max($entree->quantite - $quantiteSortie, 0);
+    // $entree->quantite_restante = $quantiteRestante;
+    // return $entree;
+    // })->filter(function ($entree) {
+    //     return $entree->quantite_restante > 0;
+    // })
+    // ->sortBy(function ($entree) {
+    //     return [$entree->numero_lot, $entree->date_entree]; // Tri d'abord par numéro de lot, puis date d'entrée croissante
+    // });
+
+    //new code 
+    $lotsDisponibles = $produit->stocksEntrees->map(function ($entree) {
+    $quantiteSortie = $entree->stocksSorties->sum('quantite');
+    $quantiteRestante = max($entree->quantite - $quantiteSortie, 0);
+    $entree->quantite_restante = $quantiteRestante;
+
+    // Ajout de la date de dernière sortie pour ce lot
+    $derniereSortie = $entree->stocksSorties->sortByDesc('date_sortie')->first();
+    $entree->date_derniere_sortie = $derniereSortie ? $derniereSortie->date_sortie : null;
+        return $entree;
+    })->filter(function ($entree) {
+        return $entree->quantite_restante > 0;
+    })
+    ->sortBy(function ($entree) {
+        return [$entree->numero_lot, $entree->date_entree];
+    });
+
+
+    return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles', 'uniteMesure'));
+}
 
 
     /**

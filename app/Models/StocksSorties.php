@@ -17,8 +17,9 @@ class StocksSorties extends Model
         'motif',
         'user_id',
         'numero_bon',
+        'numero_ordre',
         'statut',
-        'client', 
+        'client',
     ];
 
     public function produit()

@@ -117,29 +117,44 @@
         <table class="table table-bordered table-sm align-middle table-hover">
             <thead class="table-primary text-center small">
                 <tr>
-                    <th>Fournisseur</th>
+                    <th class="text-start">Fournisseur</th>
+                    <th>Numéro de Lot</th>
+                    <th>Quantité Entree</th>
                     <th>Quantité restante</th>
                     <th>Date d'entrée</th>
                     <th>Date d'expiration</th>
+                    <th>Date du dernier sortie</th>
                 </tr>
             </thead>
             <tbody class="small">
                 @forelse ($lotsDisponibles as $entree)
                     <tr>
+                       
                         <td class="text-break">{{ $entree->fournisseur->nom ?? 'N/A' }}</td>
+                        <td class="text-center">{{ $entree->numero_lot ?? 'N/A' }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-info fs-6">
+                                
+                            {{ $entree->quantite }}
+                            </span>
+                        </td>
                         <td class="text-center">
                             <span class="badge bg-success fs-6">{{ intval($entree->quantite_restante) }}</span>
                         </td>
+                        
                         <td class="text-center">
                             {{ \Carbon\Carbon::parse($entree->date_entree)->format('d/m/Y') }}
                         </td>
                         <td class="text-center">
                             {{ \Carbon\Carbon::parse($entree->date_expiration)->format('d/m/Y') }}
+                        </td><td class="text-center">
+                            {{ $entree->date_derniere_sortie ? \Carbon\Carbon::parse($entree->date_derniere_sortie)->format('d/m/Y') : 'Aucune sortie' }}
+
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center text-muted">Aucun lot disponible</td>
+                        <td colspan="7" class="text-center text-muted">Aucun lot disponible</td>
                     </tr>
                 @endforelse
             </tbody>

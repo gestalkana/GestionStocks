@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inputRecherche.addEventListener('keyup', filtrerTableau);
     selectCategorie.addEventListener('change', filtrerTableau);
     selectStatut.addEventListener('change', filtrerTableau);
-    selectEntrepot.addEventListener('change', filtrerTableau); // 🆕
+    selectEntrepot.addEventListener('change', filtrerTableau); 
 
     // Réinitialisation
     const resetBtn = document.getElementById('resetFiltres');
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputRecherche.value = '';
         selectCategorie.value = '';
         selectStatut.value = '';
-        selectEntrepot.value = ''; // 🆕
+        selectEntrepot.value = ''; 
         tbody.innerHTML = '';
         allRows.forEach(row => tbody.appendChild(row.cloneNode(true)));
     });

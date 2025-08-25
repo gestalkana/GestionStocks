@@ -4,7 +4,7 @@
 @section('Page-title', 'Entrées de Stock' )
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid py-2">
     <!-- En-tête -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h5 class="mb-0">

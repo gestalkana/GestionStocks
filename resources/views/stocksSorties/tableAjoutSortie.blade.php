@@ -1,11 +1,12 @@
 <table class="table table-bordered table-sm align-middle mt-2">
     <thead class="table-light">
         <tr>
-            <th style="width: 35%">Produit</th>
-            <th style="width: 15%">Quantité demandée</th>
-            <th style="width: 15%">UnitéMesure</th>
+            <th style="width: 30%">Produit</th>
+            <th style="width: 10%">Quantité demandée</th>
+            <th style="width: 10%">Unité de Mesure</th>
+            <th style="width: 10%">Stock disponible</th>
             <th style="width: 30%">Lots attribués</th>
-            <th style="width: 5%" class="text-center">Action</th>
+            <th style="width: 10%" class="text-center">Action</th>
         </tr>
     </thead>
     <tbody id="produits-sortie-body">
@@ -27,6 +28,9 @@
             </td>
             <td>
                <input type="text" class="form-control form-control-sm unite-input" data-index="0" readonly>
+            </td>
+            <td class="text-center">
+                <span class="stock-disponible text-muted">--</span>
             </td>
             <td class="d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-outline-secondary btn-sm attribuer-lots" data-index="0">

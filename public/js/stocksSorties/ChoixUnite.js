@@ -1,33 +1,34 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Contexte spécifique pour limiter la portée (ex: un formulaire spécifique)
-    const formContainer = document.querySelector('.form-produit'); // <- adapter au conteneur parent
-    if (!formContainer) return; // Protection si le conteneur n'existe pas
-
-    // Fonction pour mettre à jour l'unité
-    function updateUnite(selectElement) {
+(function () {
+    // Fonction pour ajouter l'écouteur de changement sur un select produit
+    function ajouterEcouteurProduit(selectElement) {
         const index = selectElement.dataset.index;
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        if (!selectedOption) return; // Protection
+        const uniteInput = document.querySelector(`input.unite-input[data-index="${index}"]`);
 
-        let unite = selectedOption.getAttribute('data-unite');
-        unite = unite && unite.trim() !== '' ? unite : 'Non défini';
+        if (!uniteInput) return;
 
-        // Champ unité correspondant
-        const uniteInput = formContainer.querySelector(`.unite-input[data-index="${index}"]`);
-        if (uniteInput) {
+        selectElement.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const unite = selectedOption.dataset.unite || 'Non défini';
+            uniteInput.value = unite;
+        });
+
+        // Initialisation automatique si une valeur est déjà sélectionnée
+        if (selectElement.value) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const unite = selectedOption.dataset.unite || 'Non défini';
             uniteInput.value = unite;
         }
     }
 
-    // Initialisation et gestion des changements
-    const produitSelects = formContainer.querySelectorAll('.produit-select');
-    produitSelects.forEach(function (select) {
-        if (select.value) {
-            updateUnite(select);
+    // Quand le DOM est prêt
+    document.addEventListener('DOMContentLoaded', function () {
+        // Ajouter l'écouteur à la première ligne
+        const premierSelect = document.querySelector('select[name="produits[0][produit_id]"]');
+        if (premierSelect) {
+            ajouterEcouteurProduit(premierSelect);
         }
 
-        select.addEventListener('change', function () {
-            updateUnite(this);
-        });
+        // Si tu ajoutes des lignes dynamiquement ailleurs, expose la fonction dans le scope local :
+        window.ajouterEcouteurProduit = ajouterEcouteurProduit; //  uniquement si nécessaire
     });
-});
+})();

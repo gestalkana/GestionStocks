@@ -34,6 +34,12 @@
             <td>
                 <input type="number" name="produits[${index}][quantite]" class="form-control form-control-sm quantite-input" data-index="${index}" min="1" required>
             </td>
+            <td>
+                <input type="text" class="form-control form-control-sm unite-input" data-index="${index}" readonly>
+            </td>
+            <td class="text-center">
+                <span class="stock-disponible text-muted">--</span>
+            </td>
             <td class="d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-outline-secondary btn-sm attribuer-lots" data-index="${index}">
                     <i class="bi bi-tools"></i> Choisir lots
@@ -49,6 +55,30 @@
         `;
 
         tbody.appendChild(row);
+        // Attribution automatique de l'unité de mesure
+        // un écouteur de changement pour mettre à jour l’unité de mesure
+        const produitSelect = row.querySelector('.produit-select');
+        const uniteInput = row.querySelector('.unite-input');
+
+        produitSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const unite = selectedOption.dataset.unite || 'Non défini';
+            uniteInput.value = unite;
+        });
+         // Appel API pour récupérer le stock disponible
+        fetch(`/produits/${produitId}/stock-disponible`)
+            .then(res => res.json())
+            .then(data => {
+                const stockDisponible = data.stock_disponible ?? 0;
+                stockCell.textContent = stockDisponible;
+
+                // Met à jour aussi data-stock sur l'option sélectionnée (utile pour validation)
+                selectedOption.dataset.stock = stockDisponible;
+            })
+            .catch(err => {
+                console.error('Erreur récupération stock :', err);
+                stockCell.textContent = 'Erreur';
+            });
     }
 
     function handleDocumentClick(e) {
@@ -81,14 +111,47 @@
             return;
         }
 
-        document.getElementById('confirm-lots').dataset.current = index;
-
-        fetch(`/api/lots-disponibles/${selectedProduitId}`)
+        //  Ajout de la vérification du stock disponible
+       fetch(`/produits/${selectedProduitId}/stock-disponible`)
             .then(res => {
-                if (!res.ok) throw new Error("Erreur de chargement des lots.");
+                if (!res.ok) throw new Error("Erreur lors de la récupération du stock disponible.");
                 return res.json();
             })
-            .then(data => afficherLotsDansModal(data))
+            .then(stockData => {
+                const disponible = parseInt(stockData.stock_disponible) || 0;
+
+                if (selectedQuantiteDemandee > disponible) {
+                   Swal.fire({
+                        icon: 'warning',
+                        title: 'Stock insuffisant ',
+                        html: `
+                            La quantité demandée <strong style="color:#d33;">${selectedQuantiteDemandee}</strong> unités,<br>
+                            est supérieure au stock disponible <strong style="color:#3085d6;">${disponible}</strong> unités.<br><br>
+                            Veuillez réduire la quantité ou vérifier le stock.
+                        `,
+                        confirmButtonText: 'OK, compris'
+                    });
+                    return;
+                }
+
+                // Si stock OK, continuer normalement
+                document.getElementById('confirm-lots').dataset.current = index;
+
+                fetch(`/api/lots-disponibles/${selectedProduitId}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error("Erreur de chargement des lots.");
+                        return res.json();
+                    })
+                    .then(data => afficherLotsDansModal(data))
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: error.message
+                        });
+                    });
+
+            })
             .catch(error => {
                 Swal.fire({
                     icon: 'error',
@@ -207,48 +270,105 @@
         bootstrap.Modal.getInstance(document.getElementById('lotModal')).hide();
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
+   
+   function handleSubmit(e) {
+    e.preventDefault(); // Empêche la soumission par défaut
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        })
-        .then(async response => {
-            let data;
-            try {
-                data = await response.json();
-            } catch {
-                throw new Error("Réponse invalide du serveur");
-            }
+    const form = e.target;
 
-            if (!response.ok || data.success === false) {
-                throw new Error(data.message || "Erreur inconnue.");
-            }
+    const lignesProduits = form.querySelectorAll('tr');
+    let erreur = false;
 
-            return data;
-        })
-        .then(data => {
+    lignesProduits.forEach(row => {
+        const quantiteInput = row.querySelector('input.quantite-input');
+        const displayLots = row.querySelector('.lots-affiches');
+        const hiddenLots = row.querySelector('.lots-hidden');
+
+        if (!quantiteInput || !displayLots || !hiddenLots) return;
+
+        const quantiteDemandee = parseInt(quantiteInput.value) || 0;
+        const inputsHidden = hiddenLots.querySelectorAll('input[type="hidden"]');
+
+        let totalAttribue = 0;
+        inputsHidden.forEach(input => {
+            const [lotId, quantite] = input.value.split(':');
+            totalAttribue += parseInt(quantite) || 0;
+        });
+
+        if (quantiteDemandee === 0) {
             Swal.fire({
-                icon: 'success',
-                title: 'Succès',
-                text: data.message
-            }).then(() => {
-                window.location.href = "/sorties";
+                icon: 'warning',
+                title: 'Quantité manquante',
+                text: 'Une ou plusieurs lignes ont une quantité demandée de 0.'
             });
-        })
-        .catch(error => {
+            erreur = true;
+            return;
+        }
+
+        if (inputsHidden.length === 0 || totalAttribue === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Lots manquants',
+                text: 'Tous les produits doivent avoir des lots attribués.'
+            });
+            erreur = true;
+            return;
+        }
+
+        if (totalAttribue !== quantiteDemandee) {
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
-                text: error.message
+                title: 'Quantité incorrecte',
+                html: `La somme des quantités des lots (<strong>${totalAttribue}</strong>) ne correspond pas à la quantité demandée (<strong>${quantiteDemandee}</strong>).`
             });
+            erreur = true;
+            return;
+        }
+    });
+
+    if (erreur) return;
+
+    // Soumission seulement si tout est OK
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(async response => {
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("Réponse invalide du serveur");
+        }
+
+        if (!response.ok || data.success === false) {
+            throw new Error(data.message || "Erreur inconnue.");
+        }
+
+        return data;
+    })
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: data.message
+        }).then(() => {
+            window.location.href = "/stocksSorties";
         });
-    }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: error.message
+        });
+    });
+}
+
 })();
