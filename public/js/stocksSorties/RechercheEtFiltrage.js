@@ -71,22 +71,4 @@
 
         filtrerTableau(); // Init au chargement
     });
-    document.querySelector('#btnImprimer').addEventListener('click', function () {
-    const contenu = document.querySelector('#stocksSortiesTable').innerHTML;
-    const win = window.open('', '_blank');
-    win.document.write(`
-        <html>
-            <head>
-                <title>Impression Sorties de Stock</title>
-                <link rel="stylesheet" href="{{ asset('css/impression.css') }}">
-            </head>
-            <body>
-                ${contenu}
-            </body>
-        </html>
-    `);
-    win.document.close();
-    win.print();
-});
-
 })();

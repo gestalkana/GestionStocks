@@ -19,7 +19,7 @@
     <!-- Filtres -->
     @include('stocksSorties.filtreSortie')
     <!-- Tableau des sorties -->
-    <div class="card shadow-sm border-0">
+    <div id="zoneImpression" class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex align-items-center">
             <i class="bi bi-clock-history me-2"></i>
             <h5 class="mb-0">Historique des sorties</h5>
