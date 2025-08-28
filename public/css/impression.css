@@ -1,16 +1,25 @@
+/* print.css */
+
+@page {
+    size: A4 landscape;
+    margin: 10mm;
+}
+
 @media print {
     body {
-        -webkit-print-color-adjust: exact; /* pour Chrome/Safari */
-        print-color-adjust: exact;         /* pour Firefox et autres navigateurs */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-size: 10px;
+        margin: 0;
+        padding: 0;
     }
 
     body * {
-        visibility: hidden; /* cache tout */
+        visibility: hidden;
     }
 
-    #zoneImpression,
-    #zoneImpression * {
-        visibility: visible; /* montre juste la zone à imprimer */
+    #zoneImpression, #zoneImpression * {
+        visibility: visible;
     }
 
     #zoneImpression {
@@ -18,21 +27,26 @@
         left: 0;
         top: 0;
         width: 100%;
-        margin: 0;
-        padding: 0;
         background: white;
         color: black;
     }
 
-    /* Supprimer les ombres, transitions ou éléments qui peuvent déranger à l'impression */
-    * {
-        box-shadow: none !important;
-        text-shadow: none !important;
-        transition: none !important;
+    .table-responsive {
+        overflow: visible !important;
     }
 
-    /* Facultatif : éviter les sauts de page intempestifs */
-    #zoneImpression {
-        page-break-inside: avoid;
+    table {
+        width: 100% !important;
+        table-layout: auto !important;
+        font-size: 10px;
+    }
+
+    th, td {
+        padding: 4px 6px;
+        white-space: nowrap;
+    }
+
+    .no-print {
+        display: none !important;
     }
 }

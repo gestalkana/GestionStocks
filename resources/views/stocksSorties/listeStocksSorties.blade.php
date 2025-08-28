@@ -7,7 +7,7 @@
             <th>Statut</th>
             <th>Ordre n°</th>
             <th>Utilisateur</th>
-            <th class="text-center">Actions</th>
+            <th class="text-center no-print">Actions</th>
         </tr>
     </thead>
     <!-- <tbody id="sortiesTableBody">
@@ -59,7 +59,7 @@
         <td>{{ $bon['statut'] }}</td>
         <td>{{ $bon['numero_ordre'] ?? 'non défini'}}</td>
         <td>{{ $bon['user']?->name ?? '-' }}</td>
-        <td class="text-center">
+        <td class="text-center no-print">
              <a href="{{ route('stocksSorties.show', $bon['id']) }}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">
                 <i class="bi bi-eye"></i>
             </a>
