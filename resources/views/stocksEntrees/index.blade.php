@@ -16,7 +16,8 @@
     </div>
     <!-- Formulaire d'ajout d'Entree de stock - Formulaire Collapse -->
     @include('stocksEntrees.create')
-
+    <!-- Filtres -->
+    @include('stocksEntrees.filtreEntree')
     <!-- La liste des entrées à mettre à jour dynamiquement -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex align-items-center">

@@ -7,6 +7,7 @@ use App\Models\Fournisseur;
 use App\Models\StocksEntrees;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 
 class StocksSortiesController extends Controller
@@ -14,11 +15,86 @@ class StocksSortiesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+//     public function index()
+// {
+//     // Récupération des sorties de stock triées par date_sortie DESC
+//     $stocksSorties = StocksSorties::with(['produit', 'user'])
+//         ->orderBy('date_sortie', 'desc')
+//         ->orderBy('numero_bon', 'desc')
+//         ->get();
+
+//     // Groupement par numéro de bon
+//     $stocksSortiesGroupes = $stocksSorties->groupBy('numero_bon');
+
+//     $bonsSortie = [];
+
+//     foreach ($stocksSortiesGroupes as $bon => $sorties) {
+//         $firstSortie = $sorties->first();
+
+//         $bonsSortie[] = [
+//             'numero_bon' => $bon,
+//             'date_sortie' => $firstSortie->date_sortie,
+//             'statut' => $firstSortie->statut,
+//             'nombre_produits' => $sorties->count(),
+//             'user' => $firstSortie->user,
+//             'id' => $firstSortie->id,
+//         ];
+//     }
+
+//     // Tri final du tableau des bons par date_sortie desc (et éventuellement numero_bon desc)
+//     usort($bonsSortie, function ($a, $b) {
+//         return strcmp($b['date_sortie'], $a['date_sortie']) ?: strcmp($b['numero_bon'], $a['numero_bon']);
+//     });
+
+//     // Produits avec des stocks disponibles
+//     $produitsAvecStock = Produit::whereHas('stocksEntrees', function ($query) {
+//         $query->select('produit_id')->groupBy('produit_id');
+//     })->get()->filter(function ($produit) {
+//         $totalEntree = StocksEntrees::where('produit_id', $produit->id)->sum('quantite');
+//         $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
+//         return ($totalEntree - $totalSortie) > 0;
+//     });
+
+//     // Lots disponibles
+//     $stocksEntreesDisponibles = StocksEntrees::with('produit')->get()->filter(function ($entree) {
+//         $totalSortie = StocksSorties::where('stock_entree_id', $entree->id)->sum('quantite');
+//         return ($entree->quantite - $totalSortie) > 0;
+//     });
+
+//     // Numéro automatique du bon
+//     $numeroBon = $this->genererNumeroBon();
+
+//     return view('stocksSorties.index', [
+//         'stocksSorties' => $bonsSortie,
+//         'produits' => $produitsAvecStock,
+//         'stocksEntrees' => $stocksEntreesDisponibles,
+//         'numeroBon' => $numeroBon,
+//         'id' => $bonsSortie[0]['id'] ?? null,
+//     ]);
+// }
+
+public function index(Request $request)
 {
-    // Récupération des sorties de stock triées par date_sortie DESC
-    $stocksSorties = StocksSorties::with(['produit', 'user'])
-        ->orderBy('date_sortie', 'desc')
+    $mois = $request->input('mois', now()->month); // mois courant par défaut
+    $statut = $request->input('statut');
+    $utilisateur = $request->input('utilisateur');
+
+    $query = StocksSorties::with(['produit', 'user']);
+
+    // Filtrer par mois
+    $query->whereMonth('date_sortie', $mois);
+
+    // Filtrer par statut si fourni
+    if (!empty($statut)) {
+        $query->where('statut', $statut);
+    }
+
+    // Filtrer par utilisateur actuel si demandé
+    if ($utilisateur === 'moi') {
+        $query->where('user_id', Auth::id());
+    }
+
+    $stocksSorties = $query->orderBy('date_sortie', 'desc')
         ->orderBy('numero_bon', 'desc')
         ->get();
 
@@ -37,15 +113,16 @@ class StocksSortiesController extends Controller
             'nombre_produits' => $sorties->count(),
             'user' => $firstSortie->user,
             'id' => $firstSortie->id,
+            'numero_ordre' => $firstSortie->numero_ordre, 
         ];
     }
 
-    // Tri final du tableau des bons par date_sortie desc (et éventuellement numero_bon desc)
+    // Tri final
     usort($bonsSortie, function ($a, $b) {
         return strcmp($b['date_sortie'], $a['date_sortie']) ?: strcmp($b['numero_bon'], $a['numero_bon']);
     });
 
-    // Produits avec des stocks disponibles
+    // Produits avec stock
     $produitsAvecStock = Produit::whereHas('stocksEntrees', function ($query) {
         $query->select('produit_id')->groupBy('produit_id');
     })->get()->filter(function ($produit) {
@@ -60,7 +137,7 @@ class StocksSortiesController extends Controller
         return ($entree->quantite - $totalSortie) > 0;
     });
 
-    // Numéro automatique du bon
+    // Numéro automatique
     $numeroBon = $this->genererNumeroBon();
 
     return view('stocksSorties.index', [
@@ -71,7 +148,6 @@ class StocksSortiesController extends Controller
         'id' => $bonsSortie[0]['id'] ?? null,
     ]);
 }
-
 
     /**
      * Show the form for creating a new resource.

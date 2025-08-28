@@ -133,13 +133,13 @@
                         <td class="text-break">{{ $entree->fournisseur->nom ?? 'N/A' }}</td>
                         <td class="text-center">{{ $entree->numero_lot ?? 'N/A' }}</td>
                         <td class="text-center">
-                            <span class="badge bg-info fs-6">
+                            <span class="badge bg-secondary fs-6">
                                 
                             {{ $entree->quantite }}
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-success fs-6">{{ intval($entree->quantite_restante) }}</span>
+                            <span class="badge bg-info fs-6">{{ intval($entree->quantite_restante) }}</span>
                         </td>
                         
                         <td class="text-center">

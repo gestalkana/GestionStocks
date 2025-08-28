@@ -1,5 +1,5 @@
  <!-- Formulaire Collapse -->
-    <div class="collapse mb-4" id="formCollapse">
+    <div class="collapse mb-2" id="formCollapse">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <!-- Bouton pour ouvrir le modal "Ajouter un magasin" -->

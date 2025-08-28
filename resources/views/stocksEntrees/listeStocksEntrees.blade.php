@@ -16,8 +16,16 @@
     </thead>
     <tbody>
         @forelse ($stocksEntrees as $entree)
-            <tr id="entree-row-{{ $entree->id }}">
-                <td>#ES{{ str_pad($entree->id, 4, '0', STR_PAD_LEFT) }}</td>
+            <!-- <tr id="entree-row-{{ $entree->id }}"> -->
+            <tr 
+                class="entree-row"
+                data-lot="{{ strtolower($entree->numero_lot) }}"
+                data-produit="{{ strtolower($entree->produit->nom) }}"
+                data-mois="{{ \Carbon\Carbon::parse($entree->date_entree)->month }}"
+                data-entrepot-id="{{ $entree->entrepot->id ?? '' }}"
+                data-user-id="{{ $entree->user->id ?? '' }}"
+            >
+                <td>{{ $entree->numero_lot}}</td>
                 <td>{{ $entree->produit->nom }}</td>
                 <td>{{ $entree->quantite }}</td>
                 <td>{{ \Carbon\Carbon::parse($entree->date_entree)->format('d/m/Y') }}</td>

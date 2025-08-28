@@ -70,8 +70,8 @@
       <th scope="col">Nom du produit</th>
       <th scope="col">Catégorie</th>
       <th scope="col">Quantité</th>
-      <th scope="col">Prix d'achat</th>
-      <th scope="col">Prix de vente</th>
+    <!--   <th scope="col">Prix d'achat</th>
+      <th scope="col">Prix de vente</th> -->
       <th scope="col">Statut</th>
     </tr>
   </thead>

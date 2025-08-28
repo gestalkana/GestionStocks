@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Carbon::setLocale('fr'); // pour les noms de mois/jours
+        setlocale(LC_TIME, 'fr_FR.UTF-8'); // pour strftime (si jamais utilisé)
     }
 }

@@ -16,7 +16,7 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('css/impression.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body>
+<body data-current-user-id="{{ auth()->id() }}">
   <!-- barre de navigation -->
   @include('partials.navbar')
   <!-- Sidebar et contenu -->
@@ -70,9 +70,11 @@
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/EntreeEdition.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script>
+  <script src="{{ asset('js/stocksEntrees/filtreEntree.js') }}"></script>
   <!-- Stocks Sorties -->
   <script src="{{ asset('js/stocksSorties/AjoutProduitBS.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/BScreation.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/RechercheEtFiltrage.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/ChoixUnite.js') }}"></script>
   <!-- other -->
   <script src="{{ asset('js/impression.js') }}"></script>

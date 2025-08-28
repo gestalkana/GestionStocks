@@ -16,7 +16,8 @@
 
     <!-- Formulaire Collapse -->
     @include('stocksSorties.create')
-
+    <!-- Filtres -->
+    @include('stocksSorties.filtreSortie')
     <!-- Tableau des sorties -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex align-items-center">
