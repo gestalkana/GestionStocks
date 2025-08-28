@@ -26,28 +26,32 @@ class UniteMesureController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
-        // Validation des données d'entrée
+        // Validation des données
         $validated = $request->validate([
+            'code' => 'required|string|max:10|unique:unite_mesures,code',
             'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'unite_mesure_id' => 'nullable|exists:unite_mesures,id',
+            'symbole' => 'nullable|string|max:10',
         ]);
 
-        // Création de l'objet Produit
-        $produit = new Produit();
-        $produit->nom = $validated['nom'];
-        $produit->description = $validated['description'] ?? null;
-        $produit->unite_mesure_id = $validated['unite_mesure_id'] ?? null;
+        // Création et sauvegarde
+        $unite = UniteMesure::create([
+            'code' => $validated['code'],
+            'nom' => $validated['nom'],
+            'symbole' => $validated['symbole'] ?? null,
+        ]);
 
-        // Sauvegarde dans la base de données
-        $produit->save();
-
-        return response()->json([
-            'message' => 'Produit créé avec succès.',
-            'data' => $produit
+        // Réponse JSON (201 = créé)
+       return response()->json([
+            'message' => 'Unité de mesure créée avec succès.',
+            'unite' => [
+                'id' => $unite->id,
+                'nom' => $unite->nom,
+                'symbole' => $unite->symbole,
+            ]
         ], 201);
+
     }
 
     /**

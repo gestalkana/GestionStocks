@@ -7,6 +7,7 @@ use App\Models\Categorie;
 use App\Models\StocksEntrees;
 use App\Models\StocksSorties;
 use App\Models\UniteMesure;
+use App\Models\Entrepot;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
@@ -16,28 +17,36 @@ class ProduitController extends Controller
      */
    public function index(Request $request)
     {
-        //$produits = Produit::with('categorie')->paginate(10);
-        $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->paginate(10);
+    // Récupère les produits avec les relations nécessaires
+    $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->get();
+    $entrepots = Entrepot::all();
 
-        // Calcul du stock pour chaque produit
-        foreach ($produits as $produit) {
-            $totalEntrees = $produit->stocksEntrees->sum('quantite');
-            $totalSorties = $produit->stocksSorties->sum('quantite');
-            $produit->stock = $totalEntrees - $totalSorties;
-        }
-        // Récupère toutes les catégories avec le nombre de produits associés
-        $categories = Categorie::withCount('produits')->latest()->get();
-
-       
-        // Récupère toutes les unités de mesure
-        $uniteMesure = UniteMesure::all();
-        
-        if ($request->ajax()) {
-            return view('produits.listeProduits', compact('produits'))->render();
-        }
-
-        return view('produits.index', compact('produits', 'categories', 'uniteMesure'));
+    // Calcul du stock pour chaque produit
+    foreach ($produits as $produit) {
+        $totalEntrees = $produit->stocksEntrees->sum('quantite');
+        $totalSorties = $produit->stocksSorties->sum('quantite');
+        $produit->stock = $totalEntrees - $totalSorties;
     }
+
+    // Récupère toutes les catégories avec le nombre de produits associés
+    $categories = Categorie::withCount('produits')->latest()->get();
+
+    // Récupère toutes les unités de mesure
+    $uniteMesure = UniteMesure::all();
+
+    // Couleurs pour les badges
+    $badgeColors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
+    $colorIndex = 0;
+
+    // Si la requête est AJAX (filtrage), renvoyer seulement le tableau
+    if ($request->ajax()) {
+        return view('produits.listeProduits', compact('produits', 'badgeColors', 'colorIndex'))->render();
+    }
+
+    // Vue complète pour l’affichage normal
+    return view('produits.index', compact('produits', 'categories', 'uniteMesure', 'entrepots', 'badgeColors', 'colorIndex'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -60,9 +69,10 @@ class ProduitController extends Controller
             'nom' => 'required|string|max:255',
             'code_produit' => 'required|string|unique:produits,code_produit',
             'description' => 'nullable|string',
-            'prix_unitaire' => 'required|numeric|min:0',
+            'prix_unitaire' => 'nullable|numeric|min:0',
             'prix_achat' => 'nullable|numeric|min:0',
             'date_expiration' => 'nullable|date',
+            'unite_mesure_id' => 'nullable|exists:unite_mesures,id',
             'categorie_id' => 'nullable|exists:categories,id',
         ]);
 
@@ -95,36 +105,58 @@ class ProduitController extends Controller
 
     return view('produits.show', compact('produit', 'quantiteTotaleStock'));
     }*/
-    public function show($id)
-    {
-        $produit = Produit::with(['categorie', 'stocksEntrees.fournisseur','UniteMesure'])->findOrFail($id);
-        // Si l'unité de mesure n'existe pas, on crée un objet vide avec un nom par défaut
-        if (!$produit->UniteMesure) {
-            $produit->UniteMesure = (object) ['nom' => 'Non défini'];
-        }
+   public function show($id)
+{
+    $produit = Produit::with(['categorie', 'stocksEntrees.fournisseur', 'stocksEntrees.stocksSorties', 'UniteMesure'])->findOrFail($id);
+    $uniteMesure = UniteMesure::all();
 
-        // Quantité totale entrée
-        $totalEntree = $produit->stocksEntrees->sum('quantite');
-
-        // Quantité totale sortie
-        $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
-
-        // Quantité totale en stock
-        $quantiteTotaleStock = max($totalEntree - $totalSortie, 0);
-
-        // Calculer quantité restante par entrée (proportionnelle)
-        $lotsDisponibles = $produit->stocksEntrees->map(function($entree) use ($totalEntree, $totalSortie) {
-            $proportion = $entree->quantite / $totalEntree;
-            $quantiteSortieAssociee = $totalSortie * $proportion;
-            $quantiteRestante = max($entree->quantite - $quantiteSortieAssociee, 0);
-            $entree->quantite_restante = $quantiteRestante;
-            return $entree;
-        })->filter(function($entree) {
-            return $entree->quantite_restante > 0;
-        });
-
-        return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles'));
+    // Si l'unité de mesure n'existe pas
+    if (!$produit->UniteMesure) {
+        $produit->UniteMesure = (object) ['nom' => 'Non défini'];
     }
+
+    // Quantité totale entrée
+    $totalEntree = $produit->stocksEntrees->sum('quantite');
+
+    // Quantité totale sortie (toutes sorties confondues pour ce produit)
+    $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
+
+    // Quantité totale en stock
+    $quantiteTotaleStock = max($totalEntree - $totalSortie, 0);
+
+    // Calcul des lots disponibles (quantité restante par entrée)
+    // $lotsDisponibles = $produit->stocksEntrees->map(function ($entree) {
+    // $quantiteSortie = $entree->stocksSorties->sum('quantite');
+    // $quantiteRestante = max($entree->quantite - $quantiteSortie, 0);
+    // $entree->quantite_restante = $quantiteRestante;
+    // return $entree;
+    // })->filter(function ($entree) {
+    //     return $entree->quantite_restante > 0;
+    // })
+    // ->sortBy(function ($entree) {
+    //     return [$entree->numero_lot, $entree->date_entree]; // Tri d'abord par numéro de lot, puis date d'entrée croissante
+    // });
+
+    //new code 
+    $lotsDisponibles = $produit->stocksEntrees->map(function ($entree) {
+    $quantiteSortie = $entree->stocksSorties->sum('quantite');
+    $quantiteRestante = max($entree->quantite - $quantiteSortie, 0);
+    $entree->quantite_restante = $quantiteRestante;
+
+    // Ajout de la date de dernière sortie pour ce lot
+    $derniereSortie = $entree->stocksSorties->sortByDesc('date_sortie')->first();
+    $entree->date_derniere_sortie = $derniereSortie ? $derniereSortie->date_sortie : null;
+        return $entree;
+    })->filter(function ($entree) {
+        return $entree->quantite_restante > 0;
+    })
+    ->sortBy(function ($entree) {
+        return [$entree->numero_lot, $entree->date_entree];
+    });
+
+
+    return view('produits.show', compact('produit', 'quantiteTotaleStock', 'lotsDisponibles', 'uniteMesure'));
+}
 
 
     /**
@@ -150,6 +182,7 @@ class ProduitController extends Controller
             'code_produit' => 'required|string|max:100',
             'prix_achat' => 'nullable|numeric',
             'prix_unitaire' => 'required|numeric',
+            'unite_mesure_id' => 'nullable|exists:unite_mesures,id',
             'description' => 'nullable|string',
         ]);
 
@@ -158,6 +191,7 @@ class ProduitController extends Controller
         $produit->code_produit = $validated['code_produit'];
         $produit->prix_achat = $validated['prix_achat'];
         $produit->prix_unitaire = $validated['prix_unitaire'];
+        $produit->unite_mesure_id = $validated['unite_mesure_id'];
         $produit->description = $validated['description'] ?? '';
 
         $produit->save();
@@ -165,7 +199,7 @@ class ProduitController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Produit mis à jour avec succès.',
-            'produit' => $produit
+            'produit' => $produit->load('uniteMesure') // charge la relation
         ]);
     }
 
@@ -196,5 +230,4 @@ class ProduitController extends Controller
             return redirect()->route('produits.index')->with('error', 'Erreur lors de la suppression.');
         }
     }
-
 }

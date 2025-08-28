@@ -16,14 +16,52 @@
   </div>
 </div>
 
+<!-- option de recherche et de filtrage-->
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input type="text" id="filtreRecherche" class="form-control" placeholder="Rechercher par nom ou catégorie...">
+  </div>
+  <div class="col-md-2">
+    <select id="filtreCategorie" class="form-select">
+      <option value="">Toutes les catégories</option>
+      @foreach ($categories as $cat)
+        <option value="{{ $cat->id }}">{{ $cat->nom }}</option>
+      @endforeach
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select id="filtreStatut" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="disponible">Disponible</option>
+      <option value="stock faible">Stock faible</option>
+      <option value="rupture">Rupture</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select id="filtreEntrepot" class="form-select">
+      <option value="">Tous les magasins</option>
+      @foreach ($entrepots as $entrepot)
+        <option value="{{ $entrepot->id }}">{{ $entrepot->nom }}</option>
+      @endforeach
+      <option value="sans_magasin">Non assigné à un magasin</option>
+    </select>
+  </div>
+
+  <div class="col-md-1">
+    <button id="resetFiltres" class="btn btn-outline-secondary w-100" title="Réinitialiser">
+     <i class="bi bi-arrow-repeat"></i>
+    </button>
+  </div>
+  <div class="col-md-1">
+    <button id="btnImprimer" class="btn btn-primary w-100" title="Imprimer">
+        <i class="bi bi-printer"></i>
+    </button>
+  </div>
+</div>
+
+
 <!-- Liste des produits -->
-@php
-  //couleur de badge dans catégorie
-  $badgeColors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
-  $colorIndex = 0;
-@endphp
-
-
+<div id="zoneImpression">
 <table class="table table-sm table-striped table-hover align-middle">
   <thead class="table-primary">
     <tr>
@@ -32,68 +70,18 @@
       <th scope="col">Nom du produit</th>
       <th scope="col">Catégorie</th>
       <th scope="col">Quantité</th>
-      <th scope="col">Prix d'achat</th>
-      <th scope="col">Prix de vente</th>
+    <!--   <th scope="col">Prix d'achat</th>
+      <th scope="col">Prix de vente</th> -->
       <th scope="col">Statut</th>
     </tr>
   </thead>
   <tbody id="produitsTableBody">
-    @forelse ($produits as $produit)
-      @php
-        $currentColor = $badgeColors[$colorIndex % count($badgeColors)];
-        $colorIndex++;
-
-      //contenu dans tooltip
-      $tooltipContent = "
-        <strong>{$produit->nom}</strong><br>
-        ".e(Str::limit($produit->description, 100))."<br>
-        <small style='color: #007bff; font-weight: 600;'>Cliquez pour voir plus</small>
-      ";
-      @endphp
-      <tr>
-        <td><input type="checkbox" class="row-checkbox" /></td>
-        <td>{{ $produit->code_produit }}</td>
-        <td>
-          <div>
-            <div>
-              <a href="{{ route('produits.show', $produit->id) }}" class="text-dark fw-semibold text-decoration-none hover-color" data-tippy-content="{{ $tooltipContent }}">
-                {{ $produit->nom }}
-              </a>
-            </div>
-            @if ($produit->description)
-              <small class="text-muted">{{ Str::limit($produit->description, 20) }}</small>
-            @endif
-          </div>
-        </td>
-
-        <td>
-          <span class="badge {{ $currentColor }}">
-            {{ $produit->categorie?->nom ?? 'N/A' }}
-          </span>
-        </td>
-        <td>{{ $produit->stock ?? 0 }}</td>
-        <td>{{ number_format($produit->prix_achat ?? 0, 2, ',', ' ') }} Ar</td>
-        <td>{{ number_format($produit->prix_unitaire ?? 0, 2, ',', ' ') }} Ar</td>
-        <td>
-          @php
-            $status = $produit->quantite > 0 ? 'Disponible' : 'Rupture';
-          @endphp
-          <span class="badge {{ $status == 'Disponible' ? 'bg-success' : 'bg-danger' }}">{{ $status }}</span>
-        </td>
-      </tr>
-    @empty
-      <tr>
-        <td colspan="8" class="text-center text-muted">
-          Aucun produit enregistré pour l’instant.
-        </td>
-      </tr>
-    @endforelse
+     @include('produits.tbodyProduit', ['produits' => $produits])
   </tbody>
 </table>
+</div>
   {{-- Boutons de pagination --}}
  <!-- Ajouter des liens de pagination -->
 <div class="d-flex justify-content-center mb-4">
-  <div class="pagination pagination-produits">
-    {{ $produits->links('pagination::bootstrap-4') }}
-  </div>
+
 </div>

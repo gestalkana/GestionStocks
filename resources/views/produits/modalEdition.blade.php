@@ -27,6 +27,14 @@
               <label for="editProduitPrixVente" class="form-label">Prix de vente</label>
               <input type="number" step="0.01" class="form-control" id="editProduitPrixVente" name="prix_unitaire">
             </div>
+            <div class="col-md-6">
+              <label for="editProduitUnite" class="form-label">Unité de mesure</label>
+              <select class="form-select" id="editProduitUnite" name="unite_mesure_id"">
+                @foreach ($uniteMesure as $unite)
+                  <option value="{{ $unite->id }}">{{ $unite->nom }}</option>
+                @endforeach
+              </select>
+            </div>
             <div class="col-md-12">
               <label for="editProduitDescription" class="form-label">Description</label>
               <textarea class="form-control" id="editProduitDescription" name="description"></textarea>

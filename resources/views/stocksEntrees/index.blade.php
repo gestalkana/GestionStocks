@@ -4,19 +4,20 @@
 @section('Page-title', 'Entrées de Stock' )
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid py-2">
     <!-- En-tête -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">
+        <h5 class="mb-0">
             <i class="bi bi-box-arrow-in-down"></i> Entrées en Stock
-        </h2>
+        </h5>
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
             <i class="bi bi-plus-circle me-1"></i> Ajouter une entrée
         </button>
     </div>
     <!-- Formulaire d'ajout d'Entree de stock - Formulaire Collapse -->
     @include('stocksEntrees.create')
-
+    <!-- Filtres -->
+    @include('stocksEntrees.filtreEntree')
     <!-- La liste des entrées à mettre à jour dynamiquement -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex align-items-center">
@@ -25,9 +26,10 @@
         </div>
         <div class="table-responsive" id="stocksEntreesTable">
              <!-- Tableau des entrées -->
-            @include('stocksEntrees.listeStocksEntree')
+            @include('stocksEntrees.listeStocksEntrees')
         </div>
     </div>
 </div>
 @include('stocksEntrees.modalEdition')
+@include('stocksEntrees.modalAjoutMagasin')
 @endsection

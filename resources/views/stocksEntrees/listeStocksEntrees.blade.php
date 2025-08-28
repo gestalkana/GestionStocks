@@ -9,20 +9,33 @@
             <th>Date d'expiration</th>
             <th>Stock Avant</th>
             <th>Stock Après</th>
+            <th>magasin</th>
             <th>Utilisateur</th>
             <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
         @forelse ($stocksEntrees as $entree)
-            <tr id="entree-row-{{ $entree->id }}">
-                <td>#MV{{ str_pad($entree->id, 4, '0', STR_PAD_LEFT) }}</td>
+            <!-- <tr id="entree-row-{{ $entree->id }}"> -->
+            <tr 
+                class="entree-row"
+                data-lot="{{ strtolower($entree->numero_lot) }}"
+                data-produit="{{ strtolower($entree->produit->nom) }}"
+                data-mois="{{ \Carbon\Carbon::parse($entree->date_entree)->month }}"
+                data-entrepot-id="{{ $entree->entrepot->id ?? '' }}"
+                data-user-id="{{ $entree->user->id ?? '' }}"
+            >
+                <td>{{ $entree->numero_lot}}</td>
                 <td>{{ $entree->produit->nom }}</td>
                 <td>{{ $entree->quantite }}</td>
                 <td>{{ \Carbon\Carbon::parse($entree->date_entree)->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::parse($entree->date_expiration)->format('d/m/Y') }}</td>
+                <td>{{ 
+                    $entree->date_expiration ? \Carbon\Carbon::parse($entree->date_expiration)->format('d/m/Y') : 'Non défini' 
+                    }}
+                </td>
                 <td>{{ $entree->stock_avant }}</td>
                 <td>{{ $entree->stock_apres }}</td>
+                   <td>{{ $entree->entrepot->nom ?? 'Non défini' }}</td>
                 <td>{{ $entree->user->name }}</td>
                 <td class="text-end">
                     <a href="{{ route('stocksEntrees.show', $entree->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">

@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editProduitPrixAchat').value = this.dataset.prixAchat;
             document.getElementById('editProduitPrixVente').value = this.dataset.prixVente;
             document.getElementById('editProduitDescription').value = this.dataset.description;
+            document.getElementById('editProduitUnite').value = this.dataset.uniteId;
 
             modal.show();
         });
@@ -82,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const descEl = document.getElementById('description');
             if (descEl) descEl.textContent = produit.description || '';
 
+            const uniteEl = document.getElementById('unite_mesure');
+            if (uniteEl && produit.unite_mesure) {
+                uniteEl.value = produit.unite_mesure.nom;
+            }
+
             // Mise à jour des data-* sur le bouton d'édition correspondant
             const editBtn = document.querySelector(`.edit-produit-btn[data-id="${produit.id}"]`);
             if (editBtn) {
@@ -90,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 editBtn.dataset.prixAchat = produit.prix_achat;
                 editBtn.dataset.prixVente = produit.prix_unitaire;
                 editBtn.dataset.description = produit.description || '';
+                if (editBtn && produit.unite_mesure) {
+                    editBtn.dataset.unite = produit.unite_mesure.nom;
+                    editBtn.dataset.uniteId = produit.unite_mesure.id;
+                }
             }
         })
         .catch(err => alert(err.message));

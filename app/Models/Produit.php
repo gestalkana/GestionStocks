@@ -16,7 +16,6 @@ class Produit extends Model
         'description',
         'prix_unitaire',
         'prix_achat',
-        //'date_expiration',//déplacer dans le mouvement de stock entrée
         'categorie_id',
         'unite_mesure_id'
     ];

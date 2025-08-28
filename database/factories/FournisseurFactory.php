@@ -17,7 +17,11 @@ class FournisseurFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nom' => $this->faker->company(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'telephone' => $this->faker->phoneNumber(),
+            'adresse' => $this->faker->address(),
+            'statut' => $this->faker->randomElement(['actif','inactif','blacklisté','en attente']),
         ];
     }
 }

@@ -1,7 +1,7 @@
 <!-- Modal Ajouter Unité de Mesure -->
 <div class="modal fade" id="modalAjouterUnite" tabindex="-1" aria-labelledby="modalAjouterUniteLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <form id="formAjouterUnite" action="{{-- route('unite_mesures.store') --}}" method="POST">
+    <form id="formAjouterUnite" action="{{-- route('unite_mesures.store') --}}" method="POST" data-module="unite-form">
       @csrf
       <div class="modal-content">
         <div class="modal-header">

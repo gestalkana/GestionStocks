@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UniteMesure extends Model
 {
+    use HasFactory;
     // Table associée (si nom différent du pluriel par défaut)
     //protected $table = 'unites_mesure';
 
