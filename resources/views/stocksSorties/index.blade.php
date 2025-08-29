@@ -19,13 +19,15 @@
     <!-- Filtres -->
     @include('stocksSorties.filtreSortie')
     <!-- Tableau des sorties -->
-    <div id="zoneImpression" class="card shadow-sm border-0">
+    <div class="card shadow-sm border-0">
         <div class="card-header bg-light d-flex align-items-center">
             <i class="bi bi-clock-history me-2"></i>
             <h5 class="mb-0">Historique des sorties</h5>
         </div>
         <div class="table-responsive" id="stocksSortiesTable">
-            @include('stocksSorties.listeStocksSorties')
+            <div id="zoneImpression">
+                @include('stocksSorties.listeStocksSorties')
+            </div>
         </div>
     </div>
 </div>

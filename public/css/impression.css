@@ -1,5 +1,4 @@
 /* print.css */
-
 @page {
     size: A4 landscape;
     margin: 10mm;
@@ -29,6 +28,8 @@
         width: 100%;
         background: white;
         color: black;
+        font-family: "Arial", sans-serif;
+        font-size: 14pt;
     }
 
     .table-responsive {
