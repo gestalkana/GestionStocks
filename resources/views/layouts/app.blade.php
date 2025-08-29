@@ -13,6 +13,8 @@
   <!-- Tippy.js core -->
   <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
   <link rel="stylesheet" type="text/css" href="{{ asset('css/Mycss.css') }}">
+  <!-- Print.js CSS -->
+  <link rel="stylesheet" href="https://printjs.crabbly.com/css/print.min.css">
   <link rel="stylesheet" type="text/css" href="{{ asset('css/impression.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -42,6 +44,9 @@
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <script src="{{ asset('js/Tooltip.js') }}"></script>
+  <!-- Print.js Script -->
+  <script src="https://printjs.crabbly.com/js/print.min.js" defer></script>
+
   <!-- Jquery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Alerte -->
@@ -51,6 +56,7 @@
   <script src="{{ asset('js/modalUtils.js') }}"></script>
   <!-- Tableau de bord -->
   <script src="{{ asset('js/tableauDebord/graphique.js') }}"></script>
+ 
   <!-- Produit -->
   <script src="{{ asset('js/produits/PaginationProduit.js') }}"></script>
   <script src="{{ asset('js/produits/CaseAcocherProduit.js') }}"></script>

@@ -1,20 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Détails du Lot Entrée')
-@section('Page-title', 'Détails du Lot Entrée')
-
-@section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ route('stocksEntrees.index') }}" class="btn btn-sm btn-secondary d-flex align-items-center" aria-label="Retour à la liste des lots">
-        <i class="bi bi-arrow-left me-2"></i> Retour à la liste
-    </a>
-
-    <button id="btnImprimer" type="button" class="btn btn-outline-primary d-flex align-items-center" title="Imprimer cette page" aria-label="Imprimer">
-        <i class="bi bi-printer me-2"></i> Imprimer
-    </button>
-</div>
-
-
+<div id='zoneImpression'>
     {{-- Informations du lot d'entrée --}}
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-light">
@@ -102,7 +86,4 @@
             </table>
         </div>
     </div>
-<div id="zoneImpression" class="invisible">
- @include('stocksEntrees.zoneImpression')
 </div>
-@endsection
