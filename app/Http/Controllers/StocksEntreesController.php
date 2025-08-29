@@ -161,9 +161,15 @@ class StocksEntreesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(StocksEntrees $stocksEntrees)
-    {     
-        //
+    public function show($id)
+    {
+        $stockEntree = StocksEntrees::with([
+            'produit', 
+            'entrepot', 
+            'user', 
+            'stocksSorties.user'])->findOrFail($id);
+
+        return view('stocksEntrees.show', compact('stockEntree'));
     }
 
     /**
