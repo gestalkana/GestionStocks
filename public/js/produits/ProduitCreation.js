@@ -135,8 +135,9 @@ function addProductToTable(produit) {
         tdNom.outerHTML, // insère le bloc HTML proprement
         `<td><span class="badge bg-secondary">${produit.categorie?.nom ?? 'N/A'}</span></td>`,
         `<td>${quantite}</td>`,
-        `<td>${prixAchat}</td>`,
-        `<td>${prixVente}</td>`,
+        `<td>-</td>`,
+        // `<td>${prixAchat}</td>`,
+        // `<td>${prixVente}</td>`,
         `<td><span class="badge ${statutBadge}">${statut}</span></td>`,
     ];
 

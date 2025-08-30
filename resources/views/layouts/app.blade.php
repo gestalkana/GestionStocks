@@ -26,7 +26,6 @@
     <div class="row">
       <!-- Sidebar -->
       @include('partials.sidebar')
-
       <!-- Contenu principal -->
       <main class="col-md-9 ms-sm-auto col-lg-10 main-content couleur-fond">
         @yield('content')
@@ -34,7 +33,6 @@
     </div>
   </div>
   <!-- Bootstrap.js -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <!-- chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
