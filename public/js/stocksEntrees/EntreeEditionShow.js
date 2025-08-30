@@ -38,48 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return responseData;
       })
       .then(data => {
-        const entree = data.stocksEntrees;
         const modalEl = document.getElementById('editEntreeModal');
         if (modalEl) {
           bootstrap.Modal.getOrCreateInstance(modalEl).hide();
           setTimeout(forceCleanModal, 350);
         }
-
         showSuccessAlert('update', 'entrée');
 
-        const row = document.querySelector(`#entree-row-${entree.id}`);
-        if (row) {
-          row.innerHTML = `
-            <td>${entree.numero_lot}</td>
-            <td>${entree.produit.nom}</td>
-            <td>${entree.quantite}</td>
-            <td>${formatDate(entree.date_entree)}</td>
-            <td>${formatDate(entree.date_expiration)}</td>
-            <td>${entree.stock_avant ?? ''}</td>
-            <td>${entree.stock_apres ?? ''}</td>
-            <td>${entree.user.name}</td>
-            <td class="text-end">
-              <a href="/stocksEntrees/${entree.id}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">
-                <i class="bi bi-eye"></i>
-              </a>
-              <button type="button"
-                      class="btn btn-outline-warning btn-sm edit-entree-btn me-1"
-                      data-id="${entree.id}"
-                      data-quantite="${entree.quantite}"
-                      data-date="${entree.date_expiration}">
-                <i class="bi bi-pencil-square" title="Modifier"></i>
-              </button>
-              <form action="/stocksEntrees/${entree.id}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
-                <input type="hidden" name="_token" value="${csrfToken}">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </form>
-            </td>
-          `;
-          attachEditEntreeListeners();
-        }
+        // Recharge toute la page pour mettre à jour les champs 
+        //Attendre 2 secondes avant de recharger la page
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // 2000 ms = 2 secondes
+
       })
       .catch(error => {
         alert(error.message);

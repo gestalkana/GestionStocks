@@ -4,15 +4,25 @@
 @section('Page-title', 'Détails du Lot Entrée')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ route('stocksEntrees.index') }}" class="btn btn-sm btn-secondary d-flex align-items-center" aria-label="Retour à la liste des lots">
-        <i class="bi bi-arrow-left me-2"></i> Retour à la liste
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ route('stocksEntrees.index') }}" class="btn btn-sm btn-secondary d-flex align-items-center" aria-label="Retour à la liste des lots">
+            <i class="bi bi-arrow-left me-2"></i> Retour à la liste
+        </a>
+        <div class="d-flex justify-content-between">
+           <button type="button"
+                    class="btn btn-warning btn-sm edit-entree-btn me-1"
+                    data-id="{{ $stockEntree->id }}"
+                    data-quantite="{{ $stockEntree->quantite }}"
+                    data-date="{{ \Carbon\Carbon::parse($stockEntree->date_expiration)->format('Y-m-d') }}"
+                    {{ $stockEntree->stocksSorties->count() > 0 ? 'disabled' : '' }}>
+              <i class="bi bi-pencil-square me-2" title="Modifier"></i> Modifier
+            </button>
 
-    <button id="btnImprimer" type="button" class="btn btn-outline-primary d-flex align-items-center" title="Imprimer cette page" aria-label="Imprimer">
-        <i class="bi bi-printer me-2"></i> Imprimer
-    </button>
-</div>
+            <button id="btnImprimer" type="button" class="btn btn-primary d-flex align-items-center" title="Imprimer cette page" aria-label="Imprimer">
+                <i class="bi bi-printer me-2"></i> Imprimer
+            </button>
+        </div>
+    </div>
 
 
     {{-- Informations du lot d'entrée --}}
@@ -105,4 +115,5 @@
 <div id="zoneImpression" class="invisible">
  @include('stocksEntrees.zoneImpression')
 </div>
+ @include('stocksEntrees.modalEdition')
 @endsection

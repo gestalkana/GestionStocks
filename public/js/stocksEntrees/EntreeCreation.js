@@ -112,7 +112,7 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>#MV${String(entree.id).padStart(4, '0')}</td>
+        <td>${entree.numero_lot}</td>
         <td>${entree.produit.nom}</td>
         <td>${entree.quantite}</td>
         <td>${new Date(entree.date_entree).toLocaleDateString('fr-FR')}</td>

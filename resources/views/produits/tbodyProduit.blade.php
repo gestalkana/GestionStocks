@@ -47,6 +47,7 @@
             </span>
         </td>
         <td>{{ $produit->stock ?? 0 }}</td>
+        <td>{{ $produit->uniteMesure->nom ?? '-' }}</td>
       <!--   <td>{{ number_format($produit->prix_achat ?? 0, 2, ',', ' ') }} Ar</td>
         <td>{{ number_format($produit->prix_unitaire ?? 0, 2, ',', ' ') }} Ar</td> -->
         <td data-statut="{{ strtolower(str_replace(' ', '_', $status)) }}">
