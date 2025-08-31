@@ -9,7 +9,7 @@
         <h5 class="mb-0">
             <i class="bi bi-box-arrow-up me-2"></i> Sorties de Stock
         </h5>
-        <button class="btn btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
+        <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
             <i class="bi bi-dash-circle me-1"></i> Enregistrer une sortie
         </button>
     </div>
