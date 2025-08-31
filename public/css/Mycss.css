@@ -77,7 +77,7 @@ body {
 	  opacity: 0.8;
 	 }
    .hover-link {
-    background-color: 'darkblue';
+    /*background-color: 'darkblue';*/
     border-radius: 15px;
     border: 1;
    }
@@ -87,13 +87,6 @@ body {
     min-height: 100vh; /* Fait en sorte que la hauteur suive le contenu */
   }
 
-/*  .main-content {
-    flex: 1;
-    background-color: #ffffff;
-    padding: 20px;
-    /*max-height: 100vh; /* 100% de la hauteur visible de la fenêtre 
-    overflow-y: auto;*/
-  /*}*/
 /*-----------------------------------------------------------------------*/
   .main-content {
   flex: 1;
@@ -157,3 +150,38 @@ body {
   max-height: 60vh; /* 60% de la hauteur visible de la fenêtre */
   overflow-y: auto;
   }
+/* Texte plus léger et compact */
+h5, .card-header {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Boutons petits, avec padding réduit */
+.btn-sm {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.875rem;
+}
+
+/* Réduire les espaces des icônes */
+.bi {
+    vertical-align: -.125em;
+}
+
+/* Table compacte */
+table {
+    font-size: 0.85rem;
+}
+
+/* Cards arrondies modernes */
+.card {
+    border-radius: 0.5rem;
+}
+
+/* Marges réduites sur les conteneurs */
+.container-fluid.py-2 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+.card-small {
+    max-width: 300px;
+    margin: 0 auto; /* centre la carte dans sa colonne */
+}

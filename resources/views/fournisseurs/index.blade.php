@@ -6,7 +6,7 @@
 @section('content')
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-semibold">Liste des Fournisseurs</h5>	
+        <h5><i class="bi bi-truck me-2"></i> Liste des Fournisseurs</h5>	
         <!-- Bouton de Création Fournisseur -->
         <button type="button" class="btn btn-success" data-bs-toggle="modal" 
                 data-bs-target="#modalAjoutFournisseur">
