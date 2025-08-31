@@ -43,14 +43,14 @@
                         <a href="{{ route('stocksEntrees.show', $entree->id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">
                             <i class="bi bi-eye"></i>
                         </a>
-                        <!-- Modification -->
+                        <!-- Modification 
                         <button type="button"
                                 class="btn btn-outline-warning btn-sm edit-entree-btn me-1"
                                 data-id="{{ $entree->id }}"
                                 data-quantite="{{ $entree->quantite }}"
                                 data-date="{{ \Carbon\Carbon::parse($entree->date_expiration)->format('Y-m-d') }}">
                           <i class="bi bi-pencil-square" title="Modifier"></i>
-                        </button>
+                        </button>-->
                         <!-- Suppression -->
                         <form action="{{ route('stocksEntrees.destroy', $entree->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
                             @csrf

@@ -33,19 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data && data.produit) {
-                //alert(data.message || 'Produit créé avec succès');
-                //Message via sweetAlert2
-                // Swal.fire({
-                //     icon: 'success',
-                //     title: 'Produit ajouté avec succès',
-                //     text: data.message || 'Le produit a bien été enregistré.',
-                //     showConfirmButton: false,
-                //     timer: 2500,
-                //     timerProgressBar: true,
-                //     position: 'center', // <- Valeur Par défaut
-                //     background: '#f0fdf4',
-                //     color: '#065f46',
-                // });
+    
                 showSuccessAlert('create', 'produit');
 
                 form.reset();
@@ -135,8 +123,9 @@ function addProductToTable(produit) {
         tdNom.outerHTML, // insère le bloc HTML proprement
         `<td><span class="badge bg-secondary">${produit.categorie?.nom ?? 'N/A'}</span></td>`,
         `<td>${quantite}</td>`,
-        `<td>${prixAchat}</td>`,
-        `<td>${prixVente}</td>`,
+        `<td>-</td>`,
+        // `<td>${prixAchat}</td>`,
+        // `<td>${prixVente}</td>`,
         `<td><span class="badge ${statutBadge}">${statut}</span></td>`,
     ];
 

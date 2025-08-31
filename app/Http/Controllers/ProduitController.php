@@ -18,7 +18,7 @@ class ProduitController extends Controller
    public function index(Request $request)
     {
     // Récupère les produits avec les relations nécessaires
-    $produits = Produit::with(['categorie', 'stocksEntrees', 'stocksSorties'])->get();
+    $produits = Produit::with(['categorie', 'stocksEntrees', 'uniteMesure','stocksSorties'])->get();
     $entrepots = Entrepot::all();
 
     // Calcul du stock pour chaque produit

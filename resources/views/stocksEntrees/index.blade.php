@@ -10,7 +10,7 @@
         <h5 class="mb-0">
             <i class="bi bi-box-arrow-in-down"></i> Entrées en Stock
         </h5>
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
+        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse">
             <i class="bi bi-plus-circle me-1"></i> Ajouter une entrée
         </button>
     </div>

@@ -1,7 +1,7 @@
 
   <div class="d-flex justify-content-between align-items-center mb-2">
     <h5>Liste des Catégories</h5>
-    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+    <button type="button" class="btn btn-sm btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
       <i class="bi bi-plus-circle me-1"></i> Ajouter une catégorie
     </button>
   </div>

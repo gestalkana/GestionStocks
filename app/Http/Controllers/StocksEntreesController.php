@@ -19,7 +19,9 @@ class StocksEntreesController extends Controller
     public function index()
     {
         // Récupération des entrées avec les relations
-        $stocksEntrees = StocksEntrees::with(['produit', 'fournisseur', 'user', 'entrepot'])->orderBy('date_entree')->get();
+        $stocksEntrees = StocksEntrees::with(['produit', 'fournisseur', 'user', 'entrepot'])
+        ->orderBy('date_entree', 'desc')
+        ->orderBy('numero_lot', 'desc')->get();
         $entrepots = Entrepot::all();
         // Récupération des sorties groupées par produit et date
         $stocksSortiesGrouped = StocksSorties::selectRaw('produit_id, date_sortie, SUM(COALESCE(quantite, 0)) as total_sortie')
