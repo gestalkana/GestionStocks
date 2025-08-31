@@ -99,7 +99,7 @@
 
   <!-- Stocks Entrées -->
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
-  <script src="{{ asset('js/stocksEntrees/EntreeEdition.js') }}"></script>
+  <script src="{{ asset('js/stocksEntrees/EntreeEditionShow.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/filtreEntree.js') }}"></script>
 

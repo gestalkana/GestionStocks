@@ -49,9 +49,58 @@ document.addEventListener('DOMContentLoaded', () => {
         //Attendre 2 secondes avant de recharger la page
         setTimeout(() => {
           window.location.reload();
-        }, 2000); // 2000 ms = 2 secondes
+        }, 2500); // 2000 ms = 2 secondes
 
       })
+//       .then(data => {
+//   // Fermer le modal
+//   const modalEl = document.getElementById('editEntreeModal');
+//   if (modalEl) {
+//     bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+//     setTimeout(forceCleanModal, 350);
+//   }
+
+//   // ✅ Mettre à jour le bouton "modifier"
+//   const editButton = document.querySelector(`.edit-entree-btn[data-id="${data.id}"]`);
+//   if (editButton) {
+//     editButton.dataset.quantite = data.quantite;
+//     editButton.dataset.date = data.date_expiration;
+//   }
+
+//   // Mettre à jour les champs dans la page (DOM)
+//   const quantiteEl = document.querySelector('.card-body div.col-md-4:nth-child(3)');
+//   if (quantiteEl) {
+//     quantiteEl.innerHTML = `<strong>Quantité :</strong> ${parseInt(data.quantite).toLocaleString('fr-FR')}`;
+//   }
+
+//   const dateExpirationEl = document.querySelectorAll('.card-body div.col-md-4')[4]; // attention à l'ordre
+//   if (dateExpirationEl) {
+//     const formattedDate = new Date(data.date_expiration).toLocaleDateString('fr-FR', {
+//       year: 'numeric',
+//       month: 'long',
+//       day: 'numeric',
+//     });
+//     dateExpirationEl.innerHTML = `<strong>Date d'expiration :</strong> ${formattedDate}`;
+//   }
+
+//   // Mettre à jour le stock restant
+//   const sorties = parseInt(document.querySelector('[data-total-sorties]')?.dataset.totalSorties || 0); // facultatif
+//   const stockRestant = parseInt(data.quantite) - sorties;
+
+//   const stockRestantEl = document.querySelector('.card-body div.col-md-4:nth-child(6) span');
+//   if (stockRestantEl) {
+//     stockRestantEl.innerText = stockRestant.toLocaleString('fr-FR');
+//     if (stockRestant <= 0) {
+//       stockRestantEl.classList.add('text-danger', 'fw-bold');
+//     } else {
+//       stockRestantEl.classList.remove('text-danger', 'fw-bold');
+//     }
+//   }
+
+//   // Afficher succès
+//   showSuccessAlert('update', 'entrée');
+// });
+
       .catch(error => {
         alert(error.message);
         console.error("Erreur lors de la modification de l'entrée :", error);
