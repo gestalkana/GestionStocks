@@ -55,8 +55,10 @@ class FournisseurController extends Controller
      */
     public function show(Fournisseur $fournisseur)
     {
-        //
+        $fournisseur->load(['StocksEntrees.produit']); // eager loading
+        return view('fournisseurs.show', compact('fournisseur'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
