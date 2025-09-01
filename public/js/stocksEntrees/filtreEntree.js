@@ -8,12 +8,12 @@
         const tbody = document.querySelector('#stocksEntreesTable tbody');
 
         if (!tbody) return;
-
+        
+        const allRows = Array.from(tbody.querySelectorAll('.entree-row')).map(row => row.cloneNode(true));
         // Injecté via Blade dans <body data-current-user-id="{{ auth()->id() }}">
         const currentUserId = document.body.dataset.currentUserId;
 
         // Cloner toutes les lignes au chargement
-        const allRows = Array.from(tbody.querySelectorAll('.entree-row')).map(row => row.cloneNode(true));
 
         const emptyRow = document.createElement('tr');
         emptyRow.id = 'emptyRow';

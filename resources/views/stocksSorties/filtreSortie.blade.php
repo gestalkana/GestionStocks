@@ -11,15 +11,23 @@
     <!-- Mois -->
     <div class="flex-grow-1 min-w-150">
       <label for="filtreMois" class="form-label small mb-1">Mois</label>
-      @php $moisSelectionne = request('mois', now()->month); @endphp
+      <!--@php $moisSelectionne = request('mois', now()->month); @endphp
       <select id="filtreMois" name="mois" class="form-select form-select-sm">
-        <option value="">Tous</option>
+        <option value="">Tous les mois</option>
         @foreach(range(1, 12) as $mois)
           <option value="{{ $mois }}" {{ $mois == $moisSelectionne ? 'selected' : '' }}>
             {{ ucfirst(\Carbon\Carbon::create()->month($mois)->locale('fr')->translatedFormat('F')) }}
           </option>
         @endforeach
-      </select>
+      </select> -->
+      <select id="filtreMois" name="mois" class="form-select form-select-sm">
+      <option value="">Tous les mois</option>
+      @foreach (range(1, 12) as $mois)
+        <option value="{{ $mois }}" {{ $mois == now()->month ? 'selected' : '' }}>
+          {{ ucfirst(\Carbon\Carbon::create()->month($mois)->locale('fr')->translatedFormat('F')) }}
+        </option>
+      @endforeach
+    </select>
     </div>
 
     <!-- Statut -->

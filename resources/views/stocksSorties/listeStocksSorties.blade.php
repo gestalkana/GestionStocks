@@ -45,7 +45,7 @@
             </tr>
         @empty
             <tr id="emptyRow">
-                <td colspan="6" class="text-center text-muted py-4">
+                <td colspan="7" class="text-center text-muted py-4">
                     <i class="bi bi-inbox me-2 fs-5"></i> Aucune sortie enregistrée.
                 </td>
             </tr>
