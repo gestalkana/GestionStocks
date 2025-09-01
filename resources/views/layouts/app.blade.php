@@ -99,14 +99,14 @@
 
   <!-- Stocks Entrées -->
   <script src="{{ asset('js/stocksEntrees/EntreeCreation.js') }}"></script>
-  <script src="{{ asset('js/stocksEntrees/EntreeEdition.js') }}"></script>
+  <script src="{{ asset('js/stocksEntrees/EntreeEditionShow.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/ChoixUnite.js') }}"></script>
   <script src="{{ asset('js/stocksEntrees/filtreEntree.js') }}"></script>
 
   <!-- Stocks Sorties -->
   <script src="{{ asset('js/stocksSorties/AjoutProduitBS.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/BScreation.js') }}"></script>
-  <script src="{{ asset('js/stocksSorties/RechercheEtFiltrage.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/filtreSortie.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/ChoixUnite.js') }}"></script>
 
   <!-- Impression personnalisée -->

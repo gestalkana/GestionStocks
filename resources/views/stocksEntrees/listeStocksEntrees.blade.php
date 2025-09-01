@@ -63,7 +63,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center text-muted py-4">
+                    <td colspan="10" class="text-center text-muted py-4">
                         <i class="bi bi-inbox me-2 fs-5"></i> Aucune entrée enregistrée.
                     </td>
                 </tr>

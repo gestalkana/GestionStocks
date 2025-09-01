@@ -34,21 +34,40 @@
             <div class="row g-3">
                 <div class="col-md-4"><strong>Numéro de Lot :</strong> {{ $stockEntree->numero_lot }}</div>
                 <div class="col-md-4"><strong>Produit :</strong> {{ $stockEntree->produit?->nom ?? '-' }}</div>
-                <div class="col-md-4"><strong>Quantité :</strong> {{ number_format($stockEntree->quantite, 0, ',', ' ') }}</div>
+                <!-- <div class="col-md-4"><strong>Quantité :</strong> {{ number_format($stockEntree->quantite, 0, ',', ' ') }}</div> -->
+                <div class="col-md-4"><strong>Quantité :</strong> <span id="quantite_affichee">{{ number_format($stockEntree->quantite, 0, ',', ' ') }}</span></div>
 
                 <div class="col-md-4"><strong>Date d'entrée :</strong> {{ \Carbon\Carbon::parse($stockEntree->date_entree)->translatedFormat('d F Y') }}</div>
-                <div class="col-md-4">
+                <!-- <div class="col-md-4">
                     <strong>Date d'expiration :</strong> 
                     @if ($stockEntree->date_expiration)
                         {{ \Carbon\Carbon::parse($stockEntree->date_expiration)->translatedFormat('d F Y') }}
                     @else
                         <span class="badge bg-secondary">-</span>
                     @endif
-                </div>
+                </div> -->
                 <div class="col-md-4">
+                  <strong>Date d'expiration :</strong>
+                  <span id="expiration_affichee">
+                    @if ($stockEntree->date_expiration)
+                      {{ \Carbon\Carbon::parse($stockEntree->date_expiration)->translatedFormat('d F Y') }}
+                    @else
+                      <span class="badge bg-secondary">-</span>
+                    @endif
+                  </span>
+                </div>
+
+                <!-- <div class="col-md-4">
                     <strong>Stock restant :</strong> 
                     <span class="{{ ($stockEntree->quantite - $stockEntree->stocksSorties->sum('quantite')) <= 0 ? 'text-danger fw-bold' : '' }}">
                         {{ number_format($stockEntree->quantite - $stockEntree->stocksSorties->sum('quantite'), 0, ',', ' ') }}
+                    </span>
+                </div> -->
+                <div class="col-md-4">
+                    <strong>Stock restant :</strong>
+                    <span id="stock_restant" data-total-sorties="{{ $stockEntree->stocksSorties->sum('quantite') }}"
+                    class="{{ ($stockEntree->quantite - $stockEntree->stocksSorties->sum('quantite')) <= 0 ? 'text-danger fw-bold' : '' }}">
+                    {{ number_format($stockEntree->quantite - $stockEntree->stocksSorties->sum('quantite'), 0, ',', ' ') }}
                     </span>
                 </div>
 

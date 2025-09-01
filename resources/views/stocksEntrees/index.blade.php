@@ -6,7 +6,7 @@
 @section('content')
 <div class="container-fluid py-2">
     <!-- En-tête -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="mb-0">
             <i class="bi bi-box-arrow-in-down"></i> Entrées en Stock
         </h5>
