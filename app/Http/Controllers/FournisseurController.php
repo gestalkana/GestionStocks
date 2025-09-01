@@ -99,7 +99,12 @@ class FournisseurController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Fournisseur $fournisseur)
-    {
-        //
-    }
+{
+    // Suppression du fournisseur
+    $fournisseur->delete();
+
+    // Redirection avec un message de succès
+    return redirect()->route('fournisseurs.index')->with('success', 'Fournisseur supprimé avec succès.');
+}
+
 }

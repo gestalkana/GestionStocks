@@ -30,7 +30,8 @@
                   class="d-inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')" title="Supprimer">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return showSuccessAlert('delete', 'fournisseur')" title="Supprimer"  
+                     @disabled($fournisseur->StocksEntrees->count() > 0)>
                     <i class="bi bi-trash"></i>
                 </button>
             </form>
