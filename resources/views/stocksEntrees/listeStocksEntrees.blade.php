@@ -13,7 +13,7 @@
                 <th>Stock Après</th>
                 <th>magasin</th>
                 <th>Utilisateur</th>
-                <th class="text-center no-print">Actions</th>
+                <th class="text-center no-print">Voir</th>
             </tr>
         </thead>
         <tbody>
@@ -51,14 +51,7 @@
                                 data-date="{{ \Carbon\Carbon::parse($entree->date_expiration)->format('Y-m-d') }}">
                           <i class="bi bi-pencil-square" title="Modifier"></i>
                         </button>-->
-                        <!-- Suppression -->
-                        <form action="{{ route('stocksEntrees.destroy', $entree->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                        
                     </td>
                 </tr>
             @empty

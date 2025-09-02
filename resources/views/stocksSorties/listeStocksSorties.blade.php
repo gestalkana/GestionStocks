@@ -20,6 +20,7 @@
                 data-mois="{{ \Carbon\Carbon::parse($bon['date_sortie'])->month }}"
                 data-statut="{{ strtolower($bon['statut']) }}"
                 data-user-id="{{ $bon['user']?->id ?? '' }}"
+                id="row-{{ $bon['id'] }}"
             >
                 <td>{{ $bon['numero_bon'] }}</td>
                 <td>{{ $bon['nombre_produits'] }}</td>
@@ -31,16 +32,33 @@
                      <a href="{{ route('stocksSorties.show', $bon['id']) }}" class="btn btn-sm btn-outline-secondary me-1" title="Voir">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="{{ route('stocksSorties.edit', $bon['id']) }}" class="btn btn-sm btn-outline-warning me-1" title="Modifier">
+                    <!-- Modification -->
+                     <!--  <a href="{{ route('stocksSorties.edit', $bon['id']) }}" class="btn btn-sm btn-outline-warning me-1" title="Modifier">
                         <i class="bi bi-pencil-square"></i>
                     </a>
-                    <form action="{{ route('stocksSorties.destroy', $bon['id']) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
+                  <button class="btn btn-sm btn-outline-warning btn-edit-sortie me-1"
+                            data-numero="{{ $bon['numero_bon']}}">
+                        <i class="bi bi-pencil-square"></i>
+                    </button> -->
+                    <!-- Suppression -->
+                    <form id="delete-form-{{ $bon['id'] }}" action="{{ route('stocksSorties.destroy', $bon['id']) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                        <button type="button" class="btn btn-sm btn-danger" title="Supprimer"
+                            onclick="confirmDelete({{ $bon['id'] }})"
+                            @disabled($bon['statut'] != 'brouillon')>
                             <i class="bi bi-trash"></i>
                         </button>
                     </form>
+
+                    <!-- <form action="{{ route('stocksSorties.destroy', $bon['id']) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
+                        @csrf
+                        @method('DELETE')
+                           <button type="submit" class="btn btn-sm btn-danger" title="Supprimer"
+                            @disabled($bon['statut'] != 'brouillon')>
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form> -->
                 </td>
             </tr>
         @empty

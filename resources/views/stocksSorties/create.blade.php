@@ -6,8 +6,6 @@
                 <i class="bi bi-receipt me-2"></i> BON SORTIE DE STOCK
             </h6>
 
-            <!-- <form id="form-sortie" action="{{-- route('stocksSorties.store') --}}" method="POST"> -->
-            <!-- <form id="form-sortie" data-module="form-sortie"> -->
             <form id="form-sortie" data-module="form-sortie" action="{{ route('stocksSorties.ajaxStore') }}" method="POST">
 
                 @csrf
@@ -49,15 +47,13 @@
                     </button>
                 </div>
 
-
-
                 <input type="hidden" name="produits-json" value="">
                 
                 <div class="text-end mt-4">
-                    <button type="button" id="btn-enregistrer" class="btn btn-success me-2">
-                        <i class="bi bi-save"></i> Enregistrer
+                    <button type="button" id="btn-enregistrer" class="btn btn-success btn-sm me-2">
+                        <i class="bi bi-save"></i>  <span>Enregistrer en tant que brouillon</span>
                     </button>
-                    <button type="button" id="btn-valider" class="btn btn-primary">
+                    <button type="button" id="btn-valider" class="btn btn-primary btn-sm">
                         <i class="bi bi-check2-circle"></i> Valider sortie
                     </button>
                 </div>

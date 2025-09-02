@@ -74,82 +74,6 @@ class StocksSortiesController extends Controller
     ]);
 }
 
-// public function index(Request $request)
-// {
-//     $mois = $request->input('mois', now()->month); // mois courant par défaut
-//     $statut = $request->input('statut');
-//     $utilisateur = $request->input('utilisateur');
-
-//     $query = StocksSorties::with(['produit', 'user']);
-
-//     // Filtrer par mois
-//     $query->whereMonth('date_sortie', $mois);
-
-//     // Filtrer par statut si fourni
-//     if (!empty($statut)) {
-//         $query->where('statut', $statut);
-//     }
-
-//     // Filtrer par utilisateur actuel si demandé
-//     if ($utilisateur === 'moi') {
-//         $query->where('user_id', Auth::id());
-//     }
-
-//     $stocksSorties = $query->orderBy('date_sortie', 'desc')
-//         ->orderBy('numero_bon', 'desc')
-//         ->get();
-
-//     // Groupement par numéro de bon
-//     $stocksSortiesGroupes = $stocksSorties->groupBy('numero_bon');
-
-//     $bonsSortie = [];
-
-//     foreach ($stocksSortiesGroupes as $bon => $sorties) {
-//         $firstSortie = $sorties->first();
-
-//         $bonsSortie[] = [
-//             'numero_bon' => $bon,
-//             'date_sortie' => $firstSortie->date_sortie,
-//             'statut' => $firstSortie->statut,
-//             'nombre_produits' => $sorties->count(),
-//             'user' => $firstSortie->user,
-//             'id' => $firstSortie->id,
-//             'numero_ordre' => $firstSortie->numero_ordre, 
-//         ];
-//     }
-
-//     // Tri final
-//     usort($bonsSortie, function ($a, $b) {
-//         return strcmp($b['date_sortie'], $a['date_sortie']) ?: strcmp($b['numero_bon'], $a['numero_bon']);
-//     });
-
-//     // Produits avec stock
-//     $produitsAvecStock = Produit::whereHas('stocksEntrees', function ($query) {
-//         $query->select('produit_id')->groupBy('produit_id');
-//     })->get()->filter(function ($produit) {
-//         $totalEntree = StocksEntrees::where('produit_id', $produit->id)->sum('quantite');
-//         $totalSortie = StocksSorties::where('produit_id', $produit->id)->sum('quantite');
-//         return ($totalEntree - $totalSortie) > 0;
-//     });
-
-//     // Lots disponibles
-//     $stocksEntreesDisponibles = StocksEntrees::with('produit')->get()->filter(function ($entree) {
-//         $totalSortie = StocksSorties::where('stock_entree_id', $entree->id)->sum('quantite');
-//         return ($entree->quantite - $totalSortie) > 0;
-//     });
-
-//     // Numéro automatique
-//     $numeroBon = $this->genererNumeroBon();
-
-//     return view('stocksSorties.index', [
-//         'stocksSorties' => $bonsSortie,
-//         'produits' => $produitsAvecStock,
-//         'stocksEntrees' => $stocksEntreesDisponibles,
-//         'numeroBon' => $numeroBon,
-//         'id' => $bonsSortie[0]['id'] ?? null,
-//     ]);
-// }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -163,37 +87,6 @@ class StocksSortiesController extends Controller
      */
     public function ajaxStore(Request $request)
     {  
-        // -------------------------------
-        // Validation initiale
-        // -------------------------------
-        // // dd($request->all());
-        // \Log::info($request->all());
-        // try {
-        //            $request->validate([
-        //     'user_id'         => 'nullable|exists:users,id',
-        //     'date_sortie'         => 'required|date',
-        //     'statut'              => 'required|string|in:brouillon,valide,annule',
-        //     'client'              => 'nullable|string|max:255',
-        //     'numero_ordre'        => 'nullable|string|max:255',
-        //     'produits'            => 'required|array|min:1',
-        //     'produits.*.produit_id' => 'required|exists:produits,id',
-        //     'produits.*.quantite'   => 'required|integer|min:1',
-        //     'produits.*.lots'       => 'nullable|array',
-        //     'produits.*.lots.*'     => 'nullable|string',
-        // ]);
-        //     // Ton code de sauvegarde ou autre logique ici...
-        //     return response()->json(['message' => 'Données validées avec succès']);
-        // } catch (\Illuminate\Validation\ValidationException $e) {
-        //     return response()->json(['errors' => $e->errors()], 422);
-        // } catch (\Throwable $e) {
-        //     // Très utile pour voir l’erreur réelle
-        //     return response()->json([
-        //         'error' => $e->getMessage(),
-        //         'file' => $e->getFile(),
-        //         'line' => $e->getLine(),
-        //     ], 500);
-        // }
-
         // -------------------------------
         // Récupération des valeurs
         // -------------------------------
@@ -287,20 +180,41 @@ class StocksSortiesController extends Controller
                 }
             } else {
                 // -------------------------------
-                // Cas "brouillon" ou sans lots
+                // Cas "brouillon" avec ou sans lots
                 // -------------------------------
-                StocksSorties::create([
-                    'produit_id' => $produitId,
-                    'stock_entree_id' => null,
-                    'quantite' => $quantiteDemandee,
-                    'date_sortie' => now(),
-                    'motif' => $request->motif,
-                    'client' => $request->client,
-                    'user_id' => auth()->id(),
-                    'numero_bon' => $numeroBon,
-                    'numero_ordre' => $numeroOrdre,
-                    'statut' => 'brouillon'
-                ]);
+                if (!empty($lots) && is_array($lots)) {
+                    foreach ($lots as $lot) {
+                        [$lotId, $qte] = explode(':', $lot);
+                        $qte = (int) $qte;
+
+                        StocksSorties::create([
+                            'produit_id' => $produitId,
+                            'stock_entree_id' => $lotId,
+                            'quantite' => $qte,
+                            'date_sortie' => now(),
+                            'motif' => $request->motif,
+                            'client' => $request->client,
+                            'user_id' => auth()->id(),
+                            'numero_bon' => $numeroBon,
+                            'numero_ordre' => $numeroOrdre,
+                            'statut' => 'brouillon'
+                        ]);
+                    }
+                } else {
+                    // Aucun lot précisé, enregistre comme sortie globale
+                    StocksSorties::create([
+                        'produit_id' => $produitId,
+                        'stock_entree_id' => null,
+                        'quantite' => $quantiteDemandee,
+                        'date_sortie' => now(),
+                        'motif' => $request->motif,
+                        'client' => $request->client,
+                        'user_id' => auth()->id(),
+                        'numero_bon' => $numeroBon,
+                        'numero_ordre' => $numeroOrdre,
+                        'statut' => 'brouillon'
+                    ]);
+                }
             }
         }
 
@@ -369,25 +283,19 @@ class StocksSortiesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $numero_bon)
     {
-        $sortie = StocksSorties::findOrFail($id);
+        $bon = StocksSorties::where('numero_bon', $numero_bon)->firstOrFail();
 
-        $validated = $request->validate([
-            'quantite' => 'required|numeric|min:1',
-            'motif' => 'nullable|string|max:255',
-            'date_sortie' => 'required|date|before_or_equal:today',
+        $bon->update([
+            'numero_ordre' => $request->numero_ordre,
+            'statut' => $request->statut,
+            'client' => $request->client,
         ]);
 
-        $sortie->update($validated);
-
-        $sortie->load('produit', 'user');
-
-        return response()->json([
-            'message' => 'Sortie mise à jour avec succès.',
-            'stocksSorties' => $sortie,
-        ]);
+        return response()->json(['message' => 'Bon de sortie mis à jour avec succès']);
     }
+
 
     public function getStockDisponible($id)
     {
@@ -460,8 +368,23 @@ class StocksSortiesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stocks_Sorties $stocks_Sorties)
+    public function destroy($id)
     {
-        //
+        $sortie = StocksSorties::findOrFail($id);
+
+        // Facultatif : protéger contre la suppression si statut ≠ brouillon
+        if ($sortie->statut !== 'brouillon') {
+            return redirect()->back()->with('error', 'Seuls les bons en brouillon peuvent être supprimés.');
+        }
+
+        $sortie->delete();
+
+        return redirect()->route('stocksSorties.index')
+            ->with('show_success_alert_action', 'delete')
+            ->with('show_success_alert_element', 'bon de sortie');
     }
+    // public function destroy(Stocks_Sorties $stocks_Sorties)
+    // {
+    //     //
+    // }
 }
