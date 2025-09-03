@@ -106,6 +106,8 @@
   <!-- Stocks Sorties -->
   <script src="{{ asset('js/stocksSorties/AjoutProduitBS.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/BScreation.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/BSedition.js') }}"></script>
+  <script src="{{ asset('js/stocksSorties/BSsuppression.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/filtreSortie.js') }}"></script>
   <script src="{{ asset('js/stocksSorties/ChoixUnite.js') }}"></script>
 

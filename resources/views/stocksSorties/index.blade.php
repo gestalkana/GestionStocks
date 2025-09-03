@@ -31,5 +31,16 @@
         </div>
     </div>
 </div>
+@if (session('show_success_alert_action') && session('show_success_alert_element'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const action = @json(session('show_success_alert_action'));
+            const element = @json(session('show_success_alert_element'));
+
+            // Appelle ta fonction JS
+            showSuccessAlert(action, element);
+        });
+    </script>
+@endif
 @include('stocksSorties.modalAttributionLot')
 @endsection

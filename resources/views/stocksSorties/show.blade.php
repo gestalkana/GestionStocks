@@ -11,8 +11,39 @@
 
     <!-- Informations du bon -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-light">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Informations du Bon de Sortie</h5>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sm btn-warning btn-edit-sortie me-1"
+                            data-numero="{{ $bon->numero_bon }}"
+                            data-ordre="{{ $bon->numero_ordre }}"
+                            data-statut="{{ $bon->statut }}"
+                            data-client="{{ $bon->client }}"
+                            title="Modifier" 
+                            @disabled($bon->statut == 'valide')
+                            >
+                        <i class="bi bi-pencil-square"></i>
+                </button>
+                
+                <!-- Suppression -->
+                <form id="delete-form-{{ $bon['id'] }}" action="{{ route('stocksSorties.destroy', $bon['id']) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-sm btn-danger" title="Supprimer"
+                            onclick="confirmDelete({{ $bon['id'] }})"
+                            @disabled($bon->statut == 'valide')>
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                <!-- <form action="{{ route('stocksEntrees.destroy', $bon->numero_bon) }}" method="POST" class="d-inline" onsubmit="return showSuccessAlert('delete', 'Bon de sortie')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger" title="Supprimer"
+                        @disabled($bon->statut == 'valide')>
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form> -->
+            </div>
         </div>
         <div class="card-body">
             <div class="row g-3">
@@ -64,4 +95,5 @@
             </table>
         </div>
     </div>
+@include('stocksSorties.modalEdition')
 @endsection

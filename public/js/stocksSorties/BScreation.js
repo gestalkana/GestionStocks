@@ -109,6 +109,17 @@
                 return;
             }
 
+               // Vérifie que le numéro d'ordre est renseigné si le statut est "valide"
+                const numeroOrdre = form.querySelector('input[name="numero_ordre"]')?.value.trim();
+                if (statut === 'valide' && !numeroOrdre) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Numéro d\'ordre requis',
+                        text: 'Veuillez renseigner le numéro d\'ordre avant de valider.'
+                    });
+                    return;
+                }
+
             // ===== Envoi du formulaire via fetch =====
             fetch(form.action, {
                 method: 'POST',

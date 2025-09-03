@@ -10,7 +10,7 @@ class Fournisseur extends Model
     /** @use HasFactory<\Database\Factories\FournisseurFactory> */
     use HasFactory;
 
-    protected $fillable = ['nom', 'email', 'telephone', 'adresse'];
+    protected $fillable = ['nom', 'email', 'telephone', 'adresse', 'statut'];
 
     public function StocksEntrees()
     {

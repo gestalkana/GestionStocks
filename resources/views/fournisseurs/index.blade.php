@@ -66,7 +66,8 @@
                     <form action="{{ route('fournisseurs.destroy', $fournisseur->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce fournisseur ?')">
+                        <button class="btn btn-sm btn-danger" onclick="return showSuccessAlert('delete', 'fournisseur')" title="Supprimer"  
+                             @disabled($fournisseur->StocksEntrees->count() > 0)>
                             <i class="bi bi-trash"></i>
                         </button>
                     </form>

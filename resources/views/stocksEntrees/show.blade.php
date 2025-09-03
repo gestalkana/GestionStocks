@@ -9,15 +9,6 @@
             <i class="bi bi-arrow-left me-2"></i> Retour à la liste
         </a>
         <div class="d-flex justify-content-between">
-           <button type="button"
-                    class="btn btn-warning btn-sm edit-entree-btn me-1"
-                    data-id="{{ $stockEntree->id }}"
-                    data-quantite="{{ $stockEntree->quantite }}"
-                    data-date="{{ \Carbon\Carbon::parse($stockEntree->date_expiration)->format('Y-m-d') }}"
-                    {{ $stockEntree->stocksSorties->count() > 0 ? 'disabled' : '' }}>
-              <i class="bi bi-pencil-square me-2" title="Modifier"></i> Modifier
-            </button>
-
             <button id="btnImprimer" type="button" class="btn btn-primary d-flex align-items-center" title="Imprimer cette page" aria-label="Imprimer">
                 <i class="bi bi-printer me-2"></i> Imprimer
             </button>
@@ -27,8 +18,27 @@
 
     {{-- Informations du lot d'entrée --}}
     <div class="card shadow-sm mb-5">
-        <div class="card-header bg-light">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Informations du Lot Entrée</h5>
+            <div class="d-flex align-items-center">
+                <!-- Modification -->
+                <button type="button"
+                    class="btn btn-warning btn-sm edit-entree-btn me-2"
+                    data-id="{{ $stockEntree->id }}"
+                    data-quantite="{{ $stockEntree->quantite }}"
+                    data-date="{{ \Carbon\Carbon::parse($stockEntree->date_expiration)->format('Y-m-d') }}"
+                    {{ $stockEntree->stocksSorties->count() > 0 ? 'disabled' : '' }}>
+                  <i class="bi bi-pencil-square" title="Modifier"></i>
+                </button>
+                <!-- Suppression -->
+                <form action="{{ route('stocksEntrees.destroy', $stockEntree->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
         </div>
         <div class="card-body">
             <div class="row g-3">

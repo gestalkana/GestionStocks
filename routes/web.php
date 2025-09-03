@@ -25,6 +25,7 @@ Route::resource('categories', CategorieController::class
 Route::get('/produits/categories/reload', [CategorieController::class, 'reloadCategoriesFragment'])->name('categories.reload');Route::post('/unite_mesures', [UniteMesureController::class, 'store'])->name('unite_mesures.store');
 
 //Route::resource('unite_mesures', [UniteMesureController::class, 'store'])->name('unite_mesures.store');
+
 Route::resource('unite_mesures', UniteMesureController::class);
 
 Route::resource('entrepots', EntrepotController::class);
@@ -42,6 +43,9 @@ Route::resource('stocksSorties', StocksSortiesController::class
 )->middleware(['auth', 'verified']);
 
 Route::post('/stocks-sorties/ajax-store', [StocksSortiesController::class, 'ajaxStore'])->name('stocksSorties.ajaxStore');
+
+Route::put('/stocks-sorties/{numero_bon}', [StocksSortiesController::class, 'update'])->name('stocksSorties.update');
+
 
 Route::get('/produits/{id}/stock-disponible', [StocksSortiesController::class, 'getStockDisponible']);
 

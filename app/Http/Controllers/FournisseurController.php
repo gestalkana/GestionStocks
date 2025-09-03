@@ -55,8 +55,10 @@ class FournisseurController extends Controller
      */
     public function show(Fournisseur $fournisseur)
     {
-        //
+        $fournisseur->load(['StocksEntrees.produit']); // eager loading
+        return view('fournisseurs.show', compact('fournisseur'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -98,6 +100,11 @@ class FournisseurController extends Controller
      */
     public function destroy(Fournisseur $fournisseur)
     {
-        //
+        // Suppression du fournisseur
+        $fournisseur->delete();
+
+        // Redirection avec un message de succès
+        return redirect()->route('fournisseurs.index')->with('success', 'Fournisseur supprimé avec succès.');
     }
+
 }
