@@ -22,6 +22,7 @@ class SeedUnitesMesure extends Command
             ['nom' => 'carton', 'symbole' => 'ctn'],
             ['nom' => 'boite', 'symbole' => 'bt'],
             ['nom' => 'sac (gony)', 'symbole' => 'gny'],
+            ['nom' => 'paquet', 'symbole' => 'pqt'],
         ];
 
         foreach ($unites as $unite) {

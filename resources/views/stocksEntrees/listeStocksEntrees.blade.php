@@ -17,7 +17,13 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($stocksEntrees as $entree)
+            @php
+                $entreesTriees = $stocksEntrees->sortBy([
+                    ['date_entree', 'desc'],
+                    ['id', 'desc']
+                ]);
+            @endphp
+            @forelse ($entreesTriees as $entree)
                 <!-- <tr id="entree-row-{{ $entree->id }}"> -->
                 <tr 
                     class="entree-row"
