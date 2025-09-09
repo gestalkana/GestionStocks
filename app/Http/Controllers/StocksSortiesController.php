@@ -175,7 +175,7 @@ class StocksSortiesController extends Controller
                     ]);
 
                     $stock = StocksEntrees::find($lotId);
-                    $stock->quantite -= $qte;
+                    $stock->quantite_disponible -= $qte;
                     $stock->save();
                 }
             } else {

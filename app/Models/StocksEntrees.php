@@ -15,6 +15,7 @@ class StocksEntrees extends Model
         'date_entree', 
         'date_expiration',
         'numero_lot',
+        'quantite_disponible',
         'entrepot_id',
         'user_id'
     ];

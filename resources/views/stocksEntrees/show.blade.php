@@ -31,10 +31,14 @@
                   <i class="bi bi-pencil-square" title="Modifier"></i>
                 </button>
                 <!-- Suppression -->
-                <form action="{{ route('stocksEntrees.destroy', $stockEntree->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
+                <form id="delete-form-{{ $stockEntree->id }}" action="{{ route('stocksEntrees.destroy', $stockEntree->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                    <button type="button" 
+                            class="btn btn-sm btn-danger" 
+                            title="Supprimer"
+                            onclick="confirmDelete({{ $stockEntree->id }})"
+                            @disabled($stockEntree->stocksSorties->count() > 0)>
                         <i class="bi bi-trash"></i>
                     </button>
                 </form>

@@ -34,15 +34,7 @@
                             @disabled($bon->statut == 'valide')>
                             <i class="bi bi-trash"></i>
                         </button>
-                    </form>
-                <!-- <form action="{{ route('stocksEntrees.destroy', $bon->numero_bon) }}" method="POST" class="d-inline" onsubmit="return showSuccessAlert('delete', 'Bon de sortie')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger" title="Supprimer"
-                        @disabled($bon->statut == 'valide')>
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </form> -->
+                </form>
             </div>
         </div>
         <div class="card-body">

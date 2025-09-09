@@ -24,15 +24,15 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CleanDatabaseSeeder::class);
         
-        Categorie::factory(10)->create();
-        UniteMesure::factory(5)->create();
-        Entrepot::factory(3)->create();
-        Fournisseur::factory(10)->create();
-        Produit::factory(20)->create();
-        StocksEntrees::factory(50)->create();
-        StocksSorties::factory(30)->create();
-        //Pour les produits multiples
-        StocksSorties::factory()->withMultipleProducts(5);
+        // Categorie::factory(10)->create();
+        // UniteMesure::factory(5)->create();
+        // Entrepot::factory(3)->create();
+        // Fournisseur::factory(10)->create();
+        // Produit::factory(20)->create();
+        // StocksEntrees::factory(50)->create();
+        // StocksSorties::factory(30)->create();
+        // //Pour les produits multiples
+        // StocksSorties::factory()->withMultipleProducts(5);
 
         /*User::factory()->create([
             'name' => 'Test User',

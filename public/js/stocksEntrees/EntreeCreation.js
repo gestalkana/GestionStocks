@@ -123,12 +123,6 @@
         <td>${entree.user?.name || '—'}</td>
         <td class="text-end">
           <a href="/stocksEntrees/${entree.id}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-eye"></i></a>
-          <a href="/stocksEntrees/${entree.id}/edit" class="btn btn-sm btn-outline-warning me-1"><i class="bi bi-pencil-square"></i></a>
-          <form action="/stocksEntrees/${entree.id}" method="POST" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?')">
-            <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]')?.content}">
-            <input type="hidden" name="_method" value="DELETE">
-            <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-          </form>
         </td>
       `;
       tbody.prepend(tr);

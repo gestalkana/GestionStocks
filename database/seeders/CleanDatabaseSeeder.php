@@ -14,11 +14,11 @@ class CleanDatabaseSeeder extends Seeder
         $tables = [
             'stocks_sorties',
             'stocks_entrees',
-            'produits',
-            'fournisseurs',
-            'entrepots',
-            'unite_mesures',
-            'categories',
+            // 'produits',
+            // 'fournisseurs',
+            // 'entrepots',
+            // 'unite_mesures',
+            // 'categories',
         ];
 
         // Construire la commande TRUNCATE avec CASCADE
