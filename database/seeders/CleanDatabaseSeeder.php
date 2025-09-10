@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +9,6 @@ class CleanDatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Liste des tables à nettoyer (ordonnées dans l'ordre inverse des dépendances)
         $tables = [
             'stocks_sorties',
             'stocks_entrees',
@@ -21,10 +19,24 @@ class CleanDatabaseSeeder extends Seeder
             // 'categories',
         ];
 
-        // Construire la commande TRUNCATE avec CASCADE
-        $tablesList = implode(', ', $tables);
+        $driver = DB::getDriverName();
 
-        // Exécuter TRUNCATE CASCADE pour vider toutes les tables (sauf users)
-        DB::statement("TRUNCATE TABLE $tablesList CASCADE;");
+        if ($driver === 'mysql') {
+            // MySQL : désactiver les contraintes FK et truncate chaque table
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+
+            foreach ($tables as $table) {
+                DB::table($table)->truncate();
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL : utiliser TRUNCATE avec CASCADE
+            $tablesList = implode(', ', array_map(fn($t) => "\"$t\"", $tables)); // Protège les noms de table
+            DB::statement("TRUNCATE TABLE $tablesList CASCADE;");
+        } else {
+            // Optionnel : support pour d'autres SGBD ou erreur
+            throw new \Exception("Unsupported database driver: $driver");
+        }
     }
 }
