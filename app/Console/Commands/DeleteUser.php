@@ -15,6 +15,12 @@ class DeleteUser extends Command
         $email = $this->argument('email');
         $force = $this->option('force');
 
+        // Protection de l'utilisateur admin "gestalkana"
+        if ($email === 'gestalkana@gmail.com') {
+            $this->error("⛔ L'utilisateur 'gestalkana' ne peut pas être supprimé (administrateur protégé).");
+            return 1;
+        }
+
         $user = User::where('email', $email)->first();
 
         if (!$user) {
