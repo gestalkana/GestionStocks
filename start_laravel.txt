@@ -1,0 +1,15 @@
+@echo off
+
+:: Démarrer Laragon
+start "" "C:\laragon\laragon.exe" /start
+
+:: Attendre un peu pour que Laragon démarre les services
+timeout /t 10 /nobreak
+
+:: Aller dans le dossier Laravel
+cd /d "C:\laragon\GestionStocks"
+
+:: Démarrer le serveur Laravel (php artisan serve)
+start cmd /k "php artisan serve"
+
+:: Fin du script
