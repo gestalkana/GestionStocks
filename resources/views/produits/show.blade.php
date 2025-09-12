@@ -22,7 +22,7 @@
                     data-prix-achat="{{ $produit->prix_achat }}"
                     data-prix-vente="{{ $produit->prix_unitaire }}"
                     data-description="{{ $produit->description }}"
-                    data-unite="{{ $produit->uniteMesure->nom ?? '' }}">
+                    data-unite-id="{{ $produit->UniteMesure->id ?? ''  }}">
                 <i class="bi bi-pencil-square" title="Modifier"></i>
             </button>
 
