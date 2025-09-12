@@ -34,6 +34,16 @@ window.attachCategorieDeleteListeners = attachCategorieDeleteListeners;
 
 document.addEventListener('DOMContentLoaded', () => {
   attachCategorieDeleteListeners();
+  // fonction de suppréssion de catégorie dans liste deroulante
+  function removeCategoryFromSelect(categoryId) {
+    const select = document.getElementById('categorie_id');
+    if (!select) return;
+
+    const option = select.querySelector(`option[value="${categoryId}"]`);
+    if (option) {
+      option.remove();
+    }
+  }
 
   const confirmBtn = document.getElementById('confirmDeleteBtnCategorie');
   if (confirmBtn) {
@@ -71,6 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (categoriesContainer) {
           categoriesContainer.innerHTML = html;
         }
+        // Supprimer l'option dans la liste déroulante catégorie
+        removeCategoryFromSelect(deleteId);
 
         if (typeof showSuccessAlert === 'function') {
           showSuccessAlert('delete', 'categorie');
