@@ -29,7 +29,7 @@
             </div>
             <div class="col-md-6">
               <label for="editProduitUnite" class="form-label">Unité de mesure</label>
-              <select class="form-select" id="editProduitUnite" name="unite_mesure_id"">
+              <select class="form-select" id="editProduitUnite" name="unite_mesure_id">
                 @foreach ($uniteMesure as $unite)
                   <option value="{{ $unite->id }}">{{ $unite->nom }}</option>
                 @endforeach

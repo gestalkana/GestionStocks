@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tr.innerHTML = `
       <td><div><strong>${category.reference}</strong></div></td>
       <td>${category.nom}</td>
-      <td>${category.description || '—'}</td>
+      <td>${(category.description || '—').slice(0, 50)}${category.description && category.description.length > 50 ? '…' : ''}</td>
       <td><span class="badge bg-danger text-white">${category.products_count || 0}</span></td>
       <td>${new Date(category.created_at).toLocaleDateString('fr-FR')}</td>
       <td>

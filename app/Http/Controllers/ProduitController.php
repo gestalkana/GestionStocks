@@ -192,7 +192,7 @@ class ProduitController extends Controller
         $produit->prix_achat = $validated['prix_achat'];
         $produit->prix_unitaire = $validated['prix_unitaire'];
         $produit->unite_mesure_id = $validated['unite_mesure_id'];
-        $produit->description = $validated['description'] ?? '';
+        $produit->description = $validated['description'] ?? null;
 
         $produit->save();
 
