@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+
   const form = document.getElementById('createCategoryForm');
   const modalElement = document.getElementById('createCategoryModal');
   const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
@@ -41,7 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       if (data && data.success && data.category) {
         addCategoryToTable(data.category);
+        addCategoryToSelect(data.category);
         showSuccessAlert('create', 'catégorie');
+        // Réactive la fonction de suppréssion catégorie
+        if (typeof attachCategorieDeleteListeners === 'function') {
+                  attachCategorieDeleteListeners();
+        }
         form.reset();
         modal.hide();
       } else if (data && data.message) {
@@ -97,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ✅ Ajout dynamique de la nouvelle catégorie dans le tableau
+  // Ajout dynamique de la nouvelle catégorie dans le tableau
   function addCategoryToTable(category) {
     const tbody = document.querySelector('#categories table tbody');
     const tr = document.createElement('tr');
@@ -106,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <td><div><strong>${category.reference}</strong></div></td>
       <td>${category.nom}</td>
       <td>${category.description || '—'}</td>
-      <td><span class="badge bg-info text-dark">${category.products_count || 0}</span></td>
+      <td><span class="badge bg-danger text-white">${category.products_count || 0}</span></td>
       <td>${new Date(category.created_at).toLocaleDateString('fr-FR')}</td>
       <td>
         <a href="#" class="btn btn-sm btn-outline-primary edit-category-btn"
@@ -118,11 +124,15 @@ document.addEventListener('DOMContentLoaded', function () {
            data-bs-target="#editCategoryModal">
            Modifier
         </a>
-
-        <form action="/categories/${category.id}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette catégorie ?');">
-          <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
-          <input type="hidden" name="_method" value="DELETE">
-          <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+        <form action="/categories/${category.id}"
+                  method="POST"
+                  class="d-inline delete-categorie-form"
+                  data-categorie-id="${category.id}"
+                  data-categorie-name="${category.nom}">
+              
+              <input type="hidden" name="_token" value="${document.querySelector('meta[name=csrf-token]').content}">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button>
         </form>
       </td>
     `;
@@ -137,4 +147,15 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('editCategoryDescription').value = button.dataset.description;
     });
   }
+  // Ajout dynamique de la nouvelle catégorie dans la liste deroulant
+  function addCategoryToSelect(category) {
+  const select = document.getElementById('categorie_id');
+
+  const option = document.createElement('option');
+  option.value = category.id;
+  option.textContent = category.nom;
+
+  select.appendChild(option); // ou insertBefore(option, select.firstChild) si tu veux en haut
+}
+
 });

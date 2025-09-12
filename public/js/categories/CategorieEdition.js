@@ -22,6 +22,17 @@ function attachEditListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Fonction de mise à jours de liste deroulante de catégorie
+  function updateCategoryInSelect(category) {
+    const select = document.getElementById('categorie_id');
+    if (!select) return;
+
+    const option = select.querySelector(`option[value="${category.id}"]`);
+    if (option) {
+      option.textContent = category.nom;
+    }
+  }
+  // réatacher l'évènnement edition
   attachEditListeners();
 
   const editForm = document.getElementById('editCategoryForm');
@@ -46,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
           return response.json();
         })
         .then(data => {
+          // Mettre à jour la liste déroulante AVANT le reload
+          updateCategoryInSelect(data.categorie);
+
           fetch('/produits/categories/reload')
             .then(response => response.text())
             .then(html => {
@@ -58,8 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof attachEditListeners === 'function') {
                   attachEditListeners();
                 }
-                if (typeof attachDeleteListeners === 'function') {
-                  attachDeleteListeners();
+                if (typeof attachCategorieDeleteListeners === 'function') {
+                  attachCategorieDeleteListeners();
                 }
 
                 const modalEl = document.getElementById('editCategoryModal');
@@ -88,3 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
