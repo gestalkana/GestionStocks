@@ -113,5 +113,7 @@
 
   <!-- Impression personnalisée -->
   <script src="{{ asset('js/impression.js') }}"></script>
+  <!-- Profile -->
+  <script src="{{ asset('js/profil/ConfirmationPassword.js') }}"></script>
 </body>
 </html>

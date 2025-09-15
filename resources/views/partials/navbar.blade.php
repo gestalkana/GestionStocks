@@ -21,11 +21,11 @@
 
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
         <li>
-          <a class="dropdown-item" href="#">Profil utilisateur</a>
+          <a class="dropdown-item" href="{{ route('profile.edit') }}">Profil utilisateur</a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
-          <a class="dropdown-item" href="#">À propos / Aide</a>
+          <a class="dropdown-item" href="{{ route('about') }}">À propos</a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
