@@ -15,6 +15,10 @@ use App\Http\Controllers\EntrepotController;
 
 Route::get('/home',[HomeController::class, 'index']
 )->middleware(['auth', 'verified'])->name('home');
+// Page À propos
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
 
 Route::resource('produits', ProduitController::class
 )->middleware(['auth', 'verified']);
@@ -54,7 +58,7 @@ Route::get('/api/lots-disponibles/{produit}', [StocksSortiesController::class, '
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
