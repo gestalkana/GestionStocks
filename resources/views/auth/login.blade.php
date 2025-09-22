@@ -64,9 +64,6 @@ h1.stylish-title:hover::after {
     transform: translateX(-50%) scaleX(1);
 }
 
-
-
-
 </style>
 @endpush
 
